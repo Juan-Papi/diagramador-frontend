@@ -1,1 +1,92 @@
-<p>register-page works!</p>
+<div class="row m-0 p-0">
+  <div class="col-md-6 bg-register p-70">
+    <div class="form-flex">
+      <h2 class="title-register w-100 px-40">Registrate</h2>
+      <form>
+        <div class="d-flex flex-row  px-40">
+          <div class="form-group mb-3 me-1 w-100">
+            <label for="name" class="mb-1">Nombre</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              placeholder="Nombre"
+            />
+          </div>
+          <div class="form-group mb-3 ms-1 w-100">
+            <label for="lastname" class="mb-1">Apellido</label>
+            <input
+              type="text"
+              id="lastname"
+              class="form-control"
+              placeholder="Apellido"
+            />
+          </div>
+        </div>
+        <div class="form-group mb-3 w-100 px-40">
+          <label for="email" class="mb-1">Correo Electronico</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="Ingrese su correo electronico"
+          />
+        </div>
+        <div class="form-group mb-3 w-100 px-40">
+          <label for="password" class="mb-1">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="Ingrese su contraseña"
+          />
+        </div>
+        <div class="form-group w-100 px-40">
+          <label for="repeat-password" class="mb-1"
+            >Vuelve a escribir tu contraseña</label
+          >
+          <input
+            type="password"
+            id="repeat-password"
+            class="form-control"
+            placeholder="Ingrese su contraseña"
+          />
+        </div>
+        <hr class="my-5">
+        
+        <div class="form-group mb-5 text-center mx-1">
+          <div class="form-check d-flex flex-row">
+            <input
+              class="form-check-input mt-0"
+              type="checkbox"
+              value=""
+              id="flexCheckDefault"
+            />
+            <label class="form-check-label" for="flexCheckDefault">
+              <p>¿Aceptas los términos & condiciones de Lorem Ipsum, como también sus políticas de privacidad?</p>
+            </label>
+          </div>  
+        </div>
+        
+        <div class="form-group px-40 text-center">
+          <button type="button">Registrarse</button>
+        </div>
+      </form>
+      
+      <div class="text-center mt-5">
+        <p class="text-account">
+          ¿Ya tienes una cuenta?
+          <a routerLink="/auth/login">Inicia sesión ahora</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 p-0 bg-image bg-superposition">
+    <!-- <img
+      src="./assets/images/login-image.png"
+      alt="login-imagen"
+      class="img-fluid"
+    /> -->
+  </div>
+</div>

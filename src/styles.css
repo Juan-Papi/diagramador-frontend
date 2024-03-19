@@ -43,4 +43,13 @@ body {
   cursor: pointer;
 }
 
+.p-70 {
+  padding: 70px;
+}
+
+.px-40 {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
 
