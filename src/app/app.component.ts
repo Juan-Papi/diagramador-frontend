@@ -10,31 +10,31 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  // private authService = inject(AuthService);
+  // private router = inject(Router);
   
-  public finishedAuthCheck = computed<boolean>(() => {
-    if (this.authService.authStatus() === AuthStatus.checking) {
-      return false;
-    }
+  // public finishedAuthCheck = computed<boolean>(() => {
+  //   if (this.authService.authStatus() === AuthStatus.checking) {
+  //     return false;
+  //   }
     
-    return true;
-  });
+  //   return true;
+  // });
   
-  public authStatusChangedEffect = effect(() => {
-    // console.log('authStatusChangedEffect: ', this.authService.authStatus());
+  // public authStatusChangedEffect = effect(() => {
+  //   // console.log('authStatusChangedEffect: ', this.authService.authStatus());
     
-    switch(this.authService.authStatus()) {
-      case AuthStatus.checking: 
-        return;
-      case AuthStatus.authenticated:
-        this.router.navigateByUrl('/home');
-        break;
-      case AuthStatus.unauthenticated:
-        this.router.navigateByUrl('/auth/login');
-        break;
-    }
+  //   switch(this.authService.authStatus()) {
+  //     case AuthStatus.checking: 
+  //       return;
+  //     case AuthStatus.authenticated:
+  //       this.router.navigateByUrl('/home');
+  //       break;
+  //     case AuthStatus.unauthenticated:
+  //       this.router.navigateByUrl('/auth/login');
+  //       break;
+  //   }
     
-  });
+  // });
   
 }

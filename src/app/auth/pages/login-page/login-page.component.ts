@@ -11,38 +11,38 @@ import { Router } from '@angular/router';
 })
 export class LoginPageComponent {
 
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  // private fb = inject(FormBuilder);
+  // private authService = inject(AuthService);
+  // private router = inject(Router);
   
-  public myForm: FormGroup = this.fb.group({
-    email: ['benjamin@gmail.com', [ Validators.required, Validators.email ]],
-    password: ['123456', [ Validators.required, Validators.minLength(6) ]],
-  })
+  // public myForm: FormGroup = this.fb.group({
+  //   email: ['benjamin@gmail.com', [ Validators.required, Validators.email ]],
+  //   password: ['123456', [ Validators.required, Validators.minLength(6) ]],
+  // })
   
-  login(): void {
-    const { email , password } = this.myForm.value;
-    this.authService.login(email, password)
-      .subscribe({
-        next: () => {
-          Swal.fire({
-            title: 'Bienvenido',
-            text: 'Usuario autenticado con éxito',
-            icon: 'success',
-            timer: 1500
-          });
-          this.router.navigateByUrl('/dashboard');
-        },
-        error: (message) => {
-          Swal.fire({
-            title: 'Oops...',
-            text: message,
-            icon: 'error',
-            timer: 1500
-            // confirmButtonText: 'Ok'
-          })
-        },
-      });
-  }
+  // login(): void {
+  //   const { email , password } = this.myForm.value;
+  //   this.authService.login(email, password)
+  //     .subscribe({
+  //       next: () => {
+  //         Swal.fire({
+  //           title: 'Bienvenido',
+  //           text: 'Usuario autenticado con éxito',
+  //           icon: 'success',
+  //           timer: 1500
+  //         });
+  //         this.router.navigateByUrl('/dashboard');
+  //       },
+  //       error: (message) => {
+  //         Swal.fire({
+  //           title: 'Oops...',
+  //           text: message,
+  //           icon: 'error',
+  //           timer: 1500
+  //           // confirmButtonText: 'Ok'
+  //         })
+  //       },
+  //     });
+  // }
   
 }
