@@ -1,0 +1,33 @@
+
+<!-- Swiper -->
+<swiper-wrapper>
+    <button class="swiper-button-prev">
+        <img src="./assets/images/ic_arrow_left.png" alt="icon_-arrow-left">
+    </button>
+    
+    <swiper-container init="false">
+      <swiper-slide *ngFor="let card of cards">
+        <div class="card">
+            <img [src]="card.img" alt="" />
+            <div class="card-description">
+              <div class="card-title">
+                <h4>{{ card.title }}</h4>
+              </div>
+              <div class="card-text">
+                <p>
+                  {{ card.description }}
+                </p>
+              </div>
+              <div class="card-link">
+                <p>{{ card.fecha }}</p>
+              </div>
+            </div>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+    
+    <button class="swiper-button-next">
+        <img src="./assets/images/ic_arrow_right.png" alt="icon_-arrow-right">
+    </button>
+    <div class="swiper-pagination">asdf</div>
+</swiper-wrapper>

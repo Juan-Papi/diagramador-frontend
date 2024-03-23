@@ -1,0 +1,50 @@
+<div class="modal" [ngStyle]="{ display: showModal ? 'block' : 'none' }">
+  <div class="modal-content shadow">
+    <span class="close" (click)="closeModal()">
+      <img src="./assets/images/ic_close_button.png" alt="icon-close" />
+    </span>
+    <h2>Completa el Formulario</h2>
+    <form>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-gropup mb-3">
+            <label for="name">Nombre del proyecto:</label>
+            <input
+              class="form-control shadow-button"
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Ingrese un nombre"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group mb-3">
+            <label for="date">Fecha:</label>
+            <input
+              class="form-control shadow-button"
+              type="date"
+              id="date"
+              name="date"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group mb-5">
+        <label for="description">Descripción:</label>
+        <textarea
+          class="form-control shadow-button"
+          id="description"
+          name="description"
+          rows="3"
+          placeholder="Breve descripción de su proyecto..."
+        ></textarea>
+      </div>
+      <button (click)="save()" class="custom-btn-secondary shadow-button mx-auto">
+        <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save" />
+        Guardar
+      </button>
+    </form>
+  </div>
+</div>

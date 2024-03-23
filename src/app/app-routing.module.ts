@@ -8,17 +8,21 @@ const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-    canActivate: [ isNotAuthenticatedGuard ],
+    // canActivate: [ isNotAuthenticatedGuard ],
   },
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
-    canActivate: [ isAuthenticatedGuard ],
+    // canActivate: [ isAuthenticatedGuard ],
   },
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
-    canActivate: [ isNotAuthenticatedGuard ],
+    // canActivate: [ isNotAuthenticatedGuard ],
+  },
+  {
+    path: 'diagrammer',
+    loadChildren: () => import('./diagrammer/diagrammer.module').then(m => m.DiagrammerModule),
   },
   {
     path: '**',

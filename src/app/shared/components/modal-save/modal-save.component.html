@@ -1,0 +1,23 @@
+<div class="modal" [ngStyle]="{ display: showModal ? 'block' : 'none' }">
+  <div class="modal-content shadow">
+    <span class="close" (click)="closeModal()">
+      <img src="./assets/images/ic_close_button.png" alt="icon-close" />
+    </span>
+    <div class="row mt-4">
+      <h2 class="text-center">¿Desea guardar los cambios?</h2>
+    </div>
+    <div class="mb-3">
+      <button (click)="save()" class="custom-btn-secondary shadow-button mx-auto">
+        <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save" />
+        Guardar cambios
+      </button>
+    </div>
+    <div class="">
+      <button class="custom-btn shadow-button mx-auto">
+        <img class="me-2" src="./assets/images/ic_save_how.png" alt="icon-save" />
+        Guardar como...
+      </button>
+    </div>
+  </div>
+</div>
+

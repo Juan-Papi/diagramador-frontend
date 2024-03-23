@@ -1,2 +1,90 @@
 
-<p>home-authenticated-page works!</p>
+<div class="mx-60 mb-5">
+  <button (click)="openModal()" class="custom-btn shadow-button d-flex align-items-center ms-auto">
+    <img class="me-2" src="./assets/images/icon_round-plus.png" alt="icon-plus">
+    Nuevo Diagrama
+  </button>
+  <app-custom-modal></app-custom-modal>
+</div>
+
+<div class="d-flex flex-row align-items-center mx-60 mb-4">
+  <h2 class="txt-title">Ultimos Diagramas</h2>
+  <a routerLink="/home/diagrams" class="custom-btn btn-sm shadow-button ms-auto">
+    Ver Todo
+  </a>
+</div>
+
+<app-slider></app-slider>
+
+<!-- <div class="mt-5 phrase-image">
+</div>
+
+<div class="contacts-section">
+  <div class="contacts-add mb-5">
+    <div class="container-logo">
+      <img src="./assets/images/photo-user.png" alt="image-user">
+      <span class="ms-2">Javier</span>
+    </div>
+    <div class="container-actions">
+      <button class="btn btn-primary me-3">
+        <img class="me-2" src="./assets/images/icon_user_plus.png" alt="icon-user-plus">
+        Añadir
+      </button>
+      <button class="btn btn-danger">
+        <img class="me-2" src="./assets/images/icon_user.png" alt="icon-user">
+        Eliminar
+      </button>
+    </div>
+  </div>
+  
+  <div class="contacts-search">
+    <span class="d-flex flex-row align-items-center justify-content-center px-3 me-5">
+      <img class="me-2" src="./assets/images/icon_user_black.png" alt="icon-user-black">
+      9 Contactos
+    </span>
+    <div class="search-group">
+      <input type="text" class="" placeholder="Buscar contacto">
+      <img src="./assets/images/icon_search.png" alt="icon-search">
+    </div>
+  </div>
+  
+  <div class="contacts-cards mb-5">
+    <div class="card">
+      <div class="text-center mb-4">
+        <img src="./assets/images/photo_contact.png" alt="image-contact">
+      </div>
+      <h3>Lara Puel</h3>
+      <p>Proyectos en común: <br> <span>igenieria, db-prisma y 2 más...</span></p>
+      <p class="txt-secondary">Conectaron en: 25 Febrero 2024.</p>
+    </div>
+    <div class="card">
+      <div class="text-center mb-4">
+        <img src="./assets/images/photo_contact.png" alt="image-contact">
+      </div>
+      <h3>Lara Puel</h3>
+      <p>Proyectos en común: <br> <span>igenieria, db-prisma y 2 más...</span></p>
+      <p class="txt-secondary">Conectaron en: 25 Febrero 2024.</p>
+    </div>
+    <div class="card">
+      <div class="text-center mb-4">
+        <img src="./assets/images/photo_contact.png" alt="image-contact">
+      </div>
+      <h3>Lara Puel</h3>
+      <p>Proyectos en común: <br> <span>igenieria, db-prisma y 2 más...</span></p>
+      <p class="txt-secondary">Conectaron en: 25 Febrero 2024.</p>
+    </div>
+    <div class="card">
+      <div class="text-center mb-4">
+        <img src="./assets/images/photo_contact.png" alt="image-contact">
+      </div>
+      <h3>Lara Puel</h3>
+      <p>Proyectos en común: <br> <span>igenieria, db-prisma y 2 más...</span></p>
+      <p class="txt-secondary">Conectaron en: 25 Febrero 2024.</p>
+    </div>
+  </div>
+  
+  <div class="text-center">
+    <button class="custom-btn-secondary">Cargar Más</button>
+  </div>
+</div> -->
+

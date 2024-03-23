@@ -1,0 +1,12 @@
+<div class="alert" [ngStyle]="{ display: showAlert ? 'block' : 'none' }">
+  <div class="alert-content shadow">
+    <div class="alert-header">
+      <img [src]="icon" alt="icon_success">
+      <h2>{{ title }}</h2>
+    </div>
+    <div class="alert-body">
+      <p>{{ description }}</p>
+    </div>
+  </div>
+</div>
+

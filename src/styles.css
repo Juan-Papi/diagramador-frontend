@@ -8,11 +8,16 @@
   --primary-color: #30BF35;
   --secondary-color: #75B423; 
   --terciary-color: #A5B78D; 
+  --cuaternary-color: #277AE8;
+  --bg1-color: #B6B6B6;
+  --text-color: #21272A;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-dm-sans: 'DM Sans', sans-serif;
 }
 
 html,
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-dm-sans);
 }
 
 .custom-btn {
@@ -21,6 +26,16 @@ body {
   padding: 3px 20px;
   text-decoration: none;
   border: 2px solid var(--primary-color);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.custom-btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 3px 20px;
+  text-decoration: none;
+  border: 2px solid var(--secondary-color);
   border-radius: 0;
   cursor: pointer;
 }
@@ -50,6 +65,25 @@ body {
 .px-40 {
   padding-left: 40px;
   padding-right: 40px;
+}
+
+.mx-60 {
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
+.mx-200 {
+  margin-left: 200px;
+  margin-right: 200px;
+}
+
+.shadow-button {
+  /* box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1); */
+  box-shadow: -1px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.txt-secondary {
+  color: var(--secondary-color);
 }
 
 
