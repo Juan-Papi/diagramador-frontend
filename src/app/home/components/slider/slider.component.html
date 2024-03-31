@@ -5,13 +5,18 @@
         <img src="./assets/images/ic_arrow_left.png" alt="icon_-arrow-left">
     </button>
     
+    <div class="content-empty mx-200" *ngIf="cards.length === 0">
+      <h2>No tiene proyectos</h2>
+    </div>
+    
     <swiper-container init="false">
       <swiper-slide *ngFor="let card of cards">
         <div class="card">
-            <img [src]="card.img" alt="" />
+            <!-- <img [src]="card.img" alt="" /> -->
+            <img src="./assets/images/bg-01.jpg" alt="icon_project">
             <div class="card-description">
               <div class="card-title">
-                <h4>{{ card.title }}</h4>
+                <h4>Proyecto: {{ card.name }}</h4>
               </div>
               <div class="card-text">
                 <p>
@@ -19,7 +24,7 @@
                 </p>
               </div>
               <div class="card-link">
-                <p>{{ card.fecha }}</p>
+                <p>Fecha: {{ card.createdAt | date: 'longDate':'':'es-BO'  }}</p>
               </div>
             </div>
         </div>
@@ -29,5 +34,5 @@
     <button class="swiper-button-next">
         <img src="./assets/images/ic_arrow_right.png" alt="icon_-arrow-right">
     </button>
-    <div class="swiper-pagination">asdf</div>
+    <div class="swiper-pagination"></div>
 </swiper-wrapper>

@@ -7,17 +7,9 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   styleUrls: ['./home-layout.component.css']
 })
 export class HomeLayoutComponent {
-
-  private authService = inject(AuthService);
-  
-  public user = computed(() => this.authService.currentUser());
-  
-  // get user() {
-  //   return this.authService.currentUser();
-  // }
   
   onLogout() {
-    this.authService.logout();
+    // this.authService.logout();
   }
   
 }

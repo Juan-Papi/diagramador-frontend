@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -11,7 +12,8 @@ import { NavbarAuthenticatedComponent } from './components/navbar-authenticated/
 import { SliderComponent } from './components/slider/slider.component';
 import { DiagramsPageComponent } from './pages/diagrams-page/diagrams-page.component';
 import { SharedModule } from '../shared/shared.module';
-
+import { ConfigPageComponent } from './pages/config-page/config-page.component';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -23,11 +25,14 @@ import { SharedModule } from '../shared/shared.module';
     NavbarAuthenticatedComponent,
     SliderComponent,
     DiagramsPageComponent,
+    ConfigPageComponent,
   ],
   imports: [
     CommonModule,
     HomeRoutingModule,
     SharedModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

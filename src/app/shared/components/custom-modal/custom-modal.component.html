@@ -4,21 +4,23 @@
       <img src="./assets/images/ic_close_button.png" alt="icon-close" />
     </span>
     <h2>Completa el Formulario</h2>
-    <form>
-      <div class="row">
-        <div class="col-md-8">
+    <form [formGroup]="diagramForm" (ngSubmit)="onSubmit()">
+      <!-- <div class="row"> -->
+        <!-- <div class="col-md-8"> -->
           <div class="form-gropup mb-3">
             <label for="name">Nombre del proyecto:</label>
             <input
+              formControlName="name"
               class="form-control shadow-button"
               type="text"
-              id="name"
-              name="name"
               placeholder="Ingrese un nombre"
             />
+            <span *ngIf="isValidField('name')" class="form-text text-danger">
+              {{ getMessageError('name') }}
+            </span>
           </div>
-        </div>
-        <div class="col-md-4">
+        <!-- </div> -->
+        <!-- <div class="col-md-4">
           <div class="form-group mb-3">
             <label for="date">Fecha:</label>
             <input
@@ -28,22 +30,24 @@
               name="date"
             />
           </div>
-        </div>
-      </div>
+        </div> -->
+      <!-- </div> -->
       
       <div class="form-group mb-5">
         <label for="description">Descripción:</label>
         <textarea
+          formControlName="description"
           class="form-control shadow-button"
-          id="description"
-          name="description"
           rows="3"
           placeholder="Breve descripción de su proyecto..."
         ></textarea>
+        <span *ngIf="isValidField('description')" class="form-text text-danger">
+          {{ getMessageError('description') }}
+        </span>
       </div>
-      <button (click)="save()" class="custom-btn-secondary shadow-button mx-auto">
+      <button type="submit" class="custom-btn-secondary shadow-button mx-auto">
         <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save" />
-        Guardar
+        {{ isEditing ? 'Actualizar' : 'Guardar' }}
       </button>
     </form>
   </div>

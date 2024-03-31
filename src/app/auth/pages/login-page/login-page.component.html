@@ -9,29 +9,40 @@
   <div class="col-md-6">
     <div class="form-grid">
       <h2 class="form-center title-login grid-one">Inicia Sesión</h2>
-      <form class="grid-two form-center">
+      <form [formGroup]="loginForm" (ngSubmit)="login()" class="grid-two form-center">
+        <div class="w-100">
+          <app-alert></app-alert>
+        </div>
         <div class="form-group mb-3">
           <label for="email" class="mb-1">Correo Electronico</label>
           <input
+            formControlName="email"
             type="email"
             id="email"
             class="form-control"
             placeholder="Ingrese su correo electronico"
           />
+          <span *ngIf="isValidField('email')" class="form-text text-danger">
+            {{ getMessageError('email') }}
+          </span>
         </div>
         <div class="form-group mb-3">
           <label for="password" class="mb-1">Contraseña</label>
           <input
+            formControlName="password"
             type="password"
             id="password"
             class="form-control"
             placeholder="Ingrese su contraseña"
           />
+          <span *ngIf="isValidField('password')" class="form-text text-danger">
+            {{ getMessageError('password') }}
+          </span>
         </div>
         <div class="mb-4">
           <a href="#">Olvide mi contraseña</a>
         </div>
-        <button type="button">Iniciar Sesión</button>
+        <button type="submit">Iniciar Sesión</button>
       </form>
       <div class="form-center mt-4 grid-three">
         <p class="text-account">

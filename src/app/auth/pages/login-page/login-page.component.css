@@ -28,6 +28,12 @@ button {
   color: white;
 }
 
+button:active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  height: 42px;
+}
+
 label {
   font-size: 1.1rem;
   font-weight: 500;

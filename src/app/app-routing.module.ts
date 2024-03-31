@@ -6,27 +6,28 @@ import { HomePageComponent } from './home/pages/home-page/home-page.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'inicio',
     component: HomePageComponent,
-    // canActivate: [ isNotAuthenticatedGuard ],
+    canActivate: [ isNotAuthenticatedGuard ],
   },
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
-    // canActivate: [ isAuthenticatedGuard ],
+    canActivate: [ isAuthenticatedGuard ],
   },
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
-    // canActivate: [ isNotAuthenticatedGuard ],
+    canActivate: [ isNotAuthenticatedGuard ],
   },
   {
     path: 'diagrammer',
     loadChildren: () => import('./diagrammer/diagrammer.module').then(m => m.DiagrammerModule),
+    canActivate: [ isAuthenticatedGuard ],
   },
   {
     path: '**',
-    redirectTo: '/'
+    redirectTo: 'inicio'
   }
 ];
 

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalService } from 'src/app/shared/services/modal.service';
+import { HomeService } from '../../services/home.service';
+import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 
 @Component({
   selector: 'app-home-authenticated-page',
@@ -8,10 +10,17 @@ import { ModalService } from 'src/app/shared/services/modal.service';
 })
 export class HomeAuthenticatedPageComponent {
 
-  constructor(private modalService: ModalService) {}
+  constructor(
+    private modalService: ModalService,
+    private homeService: HomeService,  
+  ) {}
+  
+  get proyects(): DiagramsResponse[] {
+    return this.homeService.proyectsList;
+  }
   
   openModal() {
-    this.modalService.openModal();
+    this.modalService.openModalCreate();
   }
   
 }

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import { HomeAuthenticatedPageComponent } from './pages/home-authenticated-page/home-authenticated-page.component';
 import { DiagramsPageComponent } from './pages/diagrams-page/diagrams-page.component';
+import { ConfigPageComponent } from './pages/config-page/config-page.component';
 
 const routes: Routes = [
   {
@@ -17,9 +18,13 @@ const routes: Routes = [
         path: 'diagrams',
         component: DiagramsPageComponent,
       },
+      {
+        path: 'configuration',
+        component: ConfigPageComponent,
+      },
       { 
         path: '**', 
-        redirectTo: '/' 
+        redirectTo: '' 
       },
     ]
   },

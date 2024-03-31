@@ -2,55 +2,78 @@
   <div class="col-md-6 bg-register p-70">
     <div class="form-flex">
       <h2 class="title-register w-100 px-40">Registrate</h2>
-      <form>
-        <div class="d-flex flex-row  px-40">
+      <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
+        <div class="px-40">
+          <app-alert></app-alert>
+        </div>
+        <div class="d-flex flex-row px-40">
           <div class="form-group mb-3 me-1 w-100">
             <label for="name" class="mb-1">Nombre</label>
             <input
+              formControlName="name"
               type="text"
               id="name"
               class="form-control"
               placeholder="Nombre"
             />
+            <span *ngIf="isValidField('name')" class="form-text text-danger">
+              {{ getMessageError('name') }}
+            </span>
           </div>
           <div class="form-group mb-3 ms-1 w-100">
             <label for="lastname" class="mb-1">Apellido</label>
             <input
+              formControlName="lastname"
               type="text"
               id="lastname"
               class="form-control"
               placeholder="Apellido"
             />
+            <span *ngIf="isValidField('lastname')" class="form-text text-danger">
+              {{ getMessageError('lastname') }}
+            </span>
           </div>
         </div>
         <div class="form-group mb-3 w-100 px-40">
           <label for="email" class="mb-1">Correo Electronico</label>
           <input
+            formControlName="email"
             type="email"
             id="email"
             class="form-control"
             placeholder="Ingrese su correo electronico"
           />
+          <span *ngIf="isValidField('email')" class="form-text text-danger">
+            {{ getMessageError('email') }}
+          </span>
         </div>
         <div class="form-group mb-3 w-100 px-40">
           <label for="password" class="mb-1">Contraseña</label>
           <input
+            formControlName="password"
             type="password"
             id="password"
             class="form-control"
             placeholder="Ingrese su contraseña"
           />
+          <span *ngIf="isValidField('password')" class="form-text text-danger">
+            {{ getMessageError('password') }}
+          </span>
         </div>
         <div class="form-group w-100 px-40">
           <label for="repeat-password" class="mb-1"
             >Vuelve a escribir tu contraseña</label
           >
           <input
+            formControlName="repeatPassword"
             type="password"
             id="repeat-password"
             class="form-control"
             placeholder="Ingrese su contraseña"
           />
+          <span *ngIf="isValidField('repeatPassword')" class="form-text text-danger">
+            {{ getMessageError('repeatPassword') }}
+          </span>
         </div>
         <hr class="my-5">
         
@@ -69,7 +92,7 @@
         </div>
         
         <div class="form-group px-40 text-center">
-          <button type="button">Registrarse</button>
+          <button type="submit">Registrarse</button>
         </div>
       </form>
       

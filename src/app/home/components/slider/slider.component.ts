@@ -1,7 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 
 import { register, SwiperContainer } from 'swiper/element/bundle';
 import { SwiperOptions } from 'swiper/types';
+import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 register();
 
 @Component({
@@ -11,63 +12,8 @@ register();
 })
 export class SliderComponent implements AfterViewInit {
   swiper?: SwiperContainer | null;
-
-  cards = [
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-    {
-      img: './assets/images/bg-01.jpg',
-      title: 'Proyecto: Ingeniería N° 1',
-      description: 'Colaboradores: Diego Guzman, Laura Gomez, Juan Perez, Maria Lopez',
-      fecha: 'Fecha: 23 Marzo 2024',
-    },
-  ];
+  @Input() cards: DiagramsResponse[] = [];
+  
 
   ngAfterViewInit(): void {
     // swiper element
@@ -77,10 +23,9 @@ export class SliderComponent implements AfterViewInit {
     const swiperParams: SwiperOptions = {
       slidesPerView: 1,
       // spaceBetween: 10,
-      // pagination: true,
       pagination: {
         enabled: true,
-        el: '.swiper-pagination',
+        // el: '.swiper-pagination',
         clickable: true,
         type: 'bullets',
       },
