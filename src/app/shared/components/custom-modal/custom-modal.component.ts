@@ -6,6 +6,7 @@ import { ValidatorsService } from '../../services/validators.service';
 import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
 import Swal from 'sweetalert2';
 import { HomeService } from 'src/app/home/services/home.service';
+import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
 
 @Component({
   selector: 'app-custom-modal',
@@ -20,7 +21,8 @@ export class CustomModalComponent implements OnInit {
     private homeService: HomeService,
     private router: Router,
     private fb: FormBuilder,
-    private validatorsService: ValidatorsService
+    private validatorsService: ValidatorsService,
+    private diagrammerService: DiagrammerService,
   ) {}
 
   ngOnInit(): void {
@@ -74,8 +76,9 @@ export class CustomModalComponent implements OnInit {
     const { name, description } = this.diagramForm.value;
 
     this.modalService.createDiagram(name, description).subscribe({
-      next: (res) => {
-        if (res) {
+      next: (diagram) => {
+        if (diagram) {
+          this.diagrammerService.setCurrentDiagram(diagram);
           this.modalService.closeModal();
           this.router.navigateByUrl('/diagrammer');
           this.diagramForm.reset();

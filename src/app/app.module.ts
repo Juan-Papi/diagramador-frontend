@@ -2,6 +2,7 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +29,7 @@ registerLocaleData( localeEsBO );
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ClipboardModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'es-BO' },

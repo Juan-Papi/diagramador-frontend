@@ -26,7 +26,9 @@ export class ModalService {
   private isEditingSubject = new Subject<boolean>();
   isEditing$ = this.isEditingSubject.asObservable();
   
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+  ) { }
   
   createDiagram(name: string, description: string): Observable<Diagram> {
     const url = `${this.baseUrl}/diagram/create`;
@@ -53,7 +55,7 @@ export class ModalService {
       })
     );
   }
-
+  
   showLinkToggle() {
     this.showLink = !this.showLink;
   }
