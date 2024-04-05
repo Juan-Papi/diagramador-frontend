@@ -1,84 +1,116 @@
 <div class="bg-diagrammer" [ngClass]="{ 'bg-grid': !removeGrid }">
-  
   <div class="diagrammer-top">
-      <div class="content-left">
-        <a routerLink="/home" class="btn btn-secondary px-3">
-          <img class="me-2" src="./assets/images/icon_home.png" alt="icon-home">
-          Inicio
-        </a>
+    <div class="content-left">
+      <a routerLink="/home" class="btn btn-secondary px-3">
+        <img class="me-2" src="./assets/images/icon_home.png" alt="icon-home" />
+        Inicio
+      </a>
+    </div>
+
+    <div class="content-center">
+      <div (mousedown)="mostrarActor()" class="circle-option">
+        <img src="./assets/images/ic_patron.png" alt="icon-patron" />
       </div>
-      
-      <div class="content-center">
-        <div class="circle-option">
-          <img src="./assets/images/ic_patron.png" alt="icon-patron">
-        </div>
-        <div class="circle-option">
-          <img src="./assets/images/ic_atm.png" alt="icon-atm">
-        </div>
-        <div class="circle-option">
-          <img src="./assets/images/ic_control.png" alt="icon-control">
-        </div>
-        <div class="circle-option">
-          <img src="./assets/images/ic_database.png" alt="icon-database">
-        </div>
-        <div class="circle-option">
-          <img src="./assets/images/ic_msj_asincrono.png" alt="icon-msj-asincrono">
-        </div>
-        <div class="circle-option">
-          <img src="./assets/images/ic_msj_respuesta_asincrono.png" alt="icon-msj-respuesta-asincrono">
-        </div>
-        <div class="circle-option">
-          <img class="img-sm" src="./assets/images/ic_update.png" alt="icon-update">
-        </div>
-        <div class="circle-option">
-          <img class="img-sm" src="./assets/images/icon.png" alt="icon">
-        </div>
-        <div class="circle-option">
-          <img class="img-sm" src="./assets/images/ic_round_message.png" alt="icon-round-message">
-        </div>
+      <div (mousedown)="mostrarUI()" class="circle-option">
+        <img src="./assets/images/ic_atm.png" alt="icon-atm" />
       </div>
-      
-      <div class="content-right">
-        <button (click)="openLink()" class="btn-share me-2">
-          <img class="me-2" src="./assets/images/icon_share.png" alt="icon-share">
-          Compartir
-        </button>
-        <app-modal-link></app-modal-link>
-        <button (click)="openModal()" class="btn-save">
-          <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save">
-          Guardar
-        </button>
-        <app-modal-save></app-modal-save>
+      <div (mousedown)="mostrarCC()" class="circle-option">
+        <img src="./assets/images/ic_control.png" alt="icon-control" />
       </div>
+      <div (mousedown)="mostrarCE()" class="circle-option">
+        <img src="./assets/images/ic_database.png" alt="icon-database" />
+      </div>
+      <div (mousedown)="mostrarMsjSend()" class="circle-option">
+        <img
+          src="./assets/images/ic_msj_asincrono.png"
+          alt="icon-msj-asincrono"
+        />
+      </div>
+      <div (mousedown)="mostrarMsjResp()" class="circle-option">
+        <img
+          src="./assets/images/ic_msj_respuesta_asincrono.png"
+          alt="icon-msj-respuesta-asincrono"
+        />
+      </div>
+      <div (mousedown)="crearLoop()" class="circle-option">
+        <img
+          class="img-sm"
+          src="./assets/images/ic_update.png"
+          alt="icon-update"
+        />
+      </div>
+      <div (mousedown)="crearAlt()" class="circle-option">
+        <img class="img-sm" src="./assets/images/icon.png" alt="icon" />
+      </div>
+      <div (mousedown)="insertarTexto()" class="circle-option">
+        <img
+          class="img-sm"
+          src="./assets/images/ic_round_message.png"
+          alt="icon-round-message"
+        />
+      </div>
+    </div>
+
+    <div class="content-right">
+      <button (click)="openLink()" class="btn-share me-2">
+        <img
+          class="me-2"
+          src="./assets/images/icon_share.png"
+          alt="icon-share"
+        />
+        Compartir
+      </button>
+      <app-modal-link></app-modal-link>
+      <button (click)="openModal()" class="btn-save">
+        <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save" />
+        Guardar
+      </button>
+      <app-modal-save></app-modal-save>
+    </div>
   </div>
-  
+
   <div class="digrammer-board">
+    <canvas id="canvasId" #canvasRef width="2000" height="1000"></canvas>
     {{ currentDiagram | json }}
   </div>
-  
-  <app-alert-success [icon]="icon" [description]="description"></app-alert-success>
-  
+
+  <app-alert-success
+    [icon]="icon"
+    [description]="description"
+  ></app-alert-success>
+
   <div class="diagrammer-bottom">
     <div class="content-avatars">
       <div class="container-button">
-        <button class="btn-left"><img src="./assets/images/ic_increase.png" alt="icon-increase"></button>
+        <button class="btn-left">
+          <img src="./assets/images/ic_increase.png" alt="icon-increase" />
+        </button>
         <span>100%</span>
-        <button class="btn-right"><img src="./assets/images/ic_decrease.png" alt="icon-decrease"></button>
+        <button class="btn-right">
+          <img src="./assets/images/ic_decrease.png" alt="icon-decrease" />
+        </button>
       </div>
       <div class="container-button">
-        <button class="btn-left"><img src="./assets/images/left.png" alt="icon-left"></button>
-        <button class="btn-right"><img src="./assets/images/right.png" alt="icon-right"></button>
+        <button class="btn-left">
+          <img src="./assets/images/left.png" alt="icon-left" />
+        </button>
+        <button class="btn-right">
+          <img src="./assets/images/right.png" alt="icon-right" />
+        </button>
       </div>
       <div class="avatars">
-        <img src="./assets/images/avatar_1.png" alt="avatar-1">
-        <img src="./assets/images/avatar_2.png" alt="avatar-2">
-        <img src="./assets/images/avatar_3.png" alt="avatar-3">
-        <img src="./assets/images/avatar_4.png" alt="avatar-4">
+        <img src="./assets/images/avatar_1.png" alt="avatar-1" />
+        <img src="./assets/images/avatar_2.png" alt="avatar-2" />
+        <img src="./assets/images/avatar_3.png" alt="avatar-3" />
+        <img src="./assets/images/avatar_4.png" alt="avatar-4" />
       </div>
     </div>
-    <div class="content-icon text-center" [ngClass]="{ 'icon-grid': removeGrid, 'icon-no-grid': !removeGrid }">
-      <img [src]="iconGrid"  (click)="removeGridToggle()" alt="icon-grid">
+
+    <div
+      class="content-icon text-center"
+      [ngClass]="{ 'icon-grid': removeGrid, 'icon-no-grid': !removeGrid }"
+    >
+      <img [src]="iconGrid" (click)="removeGridToggle()" alt="icon-grid" />
     </div>
   </div>
-  
 </div>
