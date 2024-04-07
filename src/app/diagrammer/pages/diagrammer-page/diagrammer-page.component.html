@@ -24,21 +24,21 @@
         <!-- este div es para la clase entidad CE -->
         <img src="./assets/images/ic_database.png" alt="icon-database" />
       </div>
-      <div class="circle-option">
+      <div (click)="addRightArrow()" class="circle-option">
         <!-- este div es para la flecha que apunta a la derecha -->
         <img
           src="./assets/images/ic_msj_asincrono.png"
           alt="icon-msj-asincrono"
         />
       </div>
-      <div class="circle-option">
+      <div (click)="addLeftArrow()" class="circle-option">
         <!-- este div es para la flecha de respuesta punteado que apunta a la izquierda-->
         <img
           src="./assets/images/ic_msj_respuesta_asincrono.png"
           alt="icon-msj-respuesta-asincrono"
         />
       </div>
-      <div class="circle-option">
+      <div (click)="addLoop()" class="circle-option">
         <!-- este div es para agregar un loop-->
         <img
           class="img-sm"
@@ -46,11 +46,11 @@
           alt="icon-update"
         />
       </div>
-      <div class="circle-option">
+      <div (click)="addAlt()" class="circle-option">
         <!-- este div es para agregar un alt-->
         <img class="img-sm" src="./assets/images/icon.png" alt="icon" />
       </div>
-      <div class="circle-option">
+      <div (click)="addMessage()" class="circle-option">
         <!-- este div es para agregar un mensaje (cuadro de texto) -->
         <img
           class="img-sm"

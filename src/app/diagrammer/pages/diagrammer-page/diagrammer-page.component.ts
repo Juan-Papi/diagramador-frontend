@@ -18,6 +18,8 @@ import {
   Loop,
   Alt,
   DiagramElement,
+  RightArrow,
+  LeftArrow,
 } from './classes/diagram-element';
 @Component({
   selector: 'app-diagrammer-page',
@@ -113,6 +115,36 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   addClassElement(): void {
     const classElement = new ClassElement(200, 100, 150, 80, 'New Class');
     this.diagramElements.push(classElement);
+    this.render();
+  }
+
+  public addMessage(): void {
+    const message = new Message(100, 150, 100, 'text example'); // Coordenadas y texto de ejemplo
+    this.diagramElements.push(message);
+    this.render();
+  }
+
+  public addLoop(): void {
+    const loop = new Loop(100, 200, 200, 100); // Valores de ejemplo para posición y tamaño
+    this.diagramElements.push(loop);
+    this.render(); // Actualiza el canvas
+  }
+
+  public addAlt(): void {
+    const alt = new Alt(150, 250, 200, 100); // Ejemplo de posición y tamaño
+    this.diagramElements.push(alt);
+    this.render(); // Actualiza el canvas
+  }
+
+  public addRightArrow(): void {
+    const arrow = new RightArrow(100, 200, 250); // Posición y longitud ejemplo
+    this.diagramElements.push(arrow);
+    this.render();
+  }
+
+  public addLeftArrow(): void {
+    const arrow = new LeftArrow(250, 200, 100); // Posición y longitud ejemplo
+    this.diagramElements.push(arrow);
     this.render();
   }
 

@@ -195,6 +195,11 @@ export class Message extends DiagramElement {
   width: number;
   text: string;
 
+  // Estas propiedades almacenan las dimensiones calculadas del rectángulo de texto
+  private rectWidth: number = 0;
+  private rectHeight: number = 40; // La altura se mantiene constante
+  private padding: number = 30;
+
   constructor(x: number, y: number, width: number, text: string) {
     super(x, y);
     this.width = width;
@@ -202,14 +207,47 @@ export class Message extends DiagramElement {
   }
 
   override draw(ctx: CanvasRenderingContext2D): void {
-    // Línea
+    ctx.save(); // Guarda el estado actual del contexto
+    ctx.font = '16px Arial';
+
+    // Calcula el ancho del texto y ajusta las propiedades del rectángulo
+    const textWidth = ctx.measureText(this.text).width;
+    this.rectWidth = textWidth + this.padding * 2;
+
+    // Ajusta la posición 'x' para centrar el rectángulo alrededor del punto inicial
+    const rectX = this.x - this.rectWidth / 2;
+
+    // Configura el color para el rectángulo y el texto
+    ctx.fillStyle = '#808080'; // Gris para el texto
+    ctx.strokeStyle = '#808080'; // Gris para el rectángulo
+
     ctx.beginPath();
-    ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + this.width, this.y);
+    ctx.rect(
+      rectX,
+      this.y - this.rectHeight / 2,
+      this.rectWidth,
+      this.rectHeight
+    );
     ctx.stroke();
 
-    // Texto
-    ctx.fillText(this.text, this.x, this.y - 5);
+    // Dibuja el texto centrado dentro del rectángulo
+    ctx.fillText(this.text, this.x, this.y + 6);
+    ctx.restore(); // Restablece el estado del contexto al estado guardado
+  }
+
+  override containsPoint(x: number, y: number): boolean {
+    const rectX = this.x - this.rectWidth / 2;
+    return (
+      x >= rectX &&
+      x <= rectX + this.rectWidth &&
+      y >= this.y - this.rectHeight / 2 &&
+      y <= this.y + this.rectHeight / 2
+    );
+  }
+
+  override move(dx: number, dy: number): void {
+    this.x += dx;
+    this.y += dy;
   }
 }
 
@@ -230,9 +268,24 @@ export class Loop extends DiagramElement {
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.stroke();
 
-    ctx.fillText('Loop', this.x + 5, this.y + 15); // Etiqueta para el loop
+    ctx.fillText('[Loop]', this.x + 5, this.y + 15); // Etiqueta para el loop
 
     this.elements.forEach((element) => element.draw(ctx)); // Dibuja cada elemento contenido
+  }
+
+  override containsPoint(x: number, y: number): boolean {
+    return (
+      x >= this.x &&
+      x <= this.x + this.width &&
+      y >= this.y &&
+      y <= this.y + this.height
+    );
+  }
+
+  override move(dx: number, dy: number): void {
+    this.x += dx;
+    this.y += dy;
+    this.elements.forEach((element) => element.move(dx, dy));
   }
 
   addElement(element: DiagramElement): void {
@@ -264,9 +317,24 @@ export class Alt extends DiagramElement {
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.stroke();
 
-    ctx.fillText('Alt', this.x + 5, this.y + 15); // Etiqueta para el Alt
+    ctx.fillText('[Alt]', this.x + 5, this.y + 15); // Etiqueta para el Alt
 
     this.elements.forEach((element) => element.draw(ctx)); // Dibuja cada elemento contenido
+  }
+
+  override containsPoint(x: number, y: number): boolean {
+    return (
+      x >= this.x &&
+      x <= this.x + this.width &&
+      y >= this.y &&
+      y <= this.y + this.height
+    );
+  }
+
+  override move(dx: number, dy: number): void {
+    this.x += dx;
+    this.y += dy;
+    this.elements.forEach((element) => element.move(dx, dy));
   }
 
   addElement(element: DiagramElement): void {
@@ -278,5 +346,140 @@ export class Alt extends DiagramElement {
     this.width = newWidth;
     this.height = newHeight;
     // Opcional: Ajustar la posición y tamaño de los elementos contenidos
+  }
+}
+
+class Arrow extends DiagramElement {
+  endX: number;
+  text: string;
+  dashed: boolean;
+
+  constructor(
+    x: number,
+    y: number,
+    endX: number,
+    text: string = 'Mensaje',
+    dashed: boolean = false
+  ) {
+    super(x, y);
+    this.endX = endX;
+    this.text = text;
+    this.dashed = dashed;
+  }
+
+  override draw(ctx: CanvasRenderingContext2D): void {
+    if (this.dashed) {
+      ctx.setLineDash([5, 5]);
+    } else {
+      ctx.setLineDash([]);
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.endX, this.y);
+    ctx.stroke();
+
+    // Reset dash to solid
+    ctx.setLineDash([]);
+
+    // Add arrow head
+    this.drawArrowHead(ctx);
+
+    // Draw text
+    ctx.fillText(this.text, (this.x + this.endX) / 2, this.y - 10);
+  }
+
+  drawArrowHead(ctx: CanvasRenderingContext2D): void {
+    // To be implemented in subclasses
+  }
+
+  override containsPoint(x: number, y: number): boolean {
+    // Simplified check, primarily for horizontal interaction
+    return (
+      y >= this.y - 10 &&
+      y <= this.y + 10 &&
+      x >= Math.min(this.x, this.endX) &&
+      x <= Math.max(this.x, this.endX)
+    );
+  }
+
+  override move(dx: number, dy: number): void {
+    this.x += dx;
+    this.endX += dx;
+    this.y += dy;
+  }
+
+  override resize(dx: number): void {
+    this.endX += dx;
+  }
+}
+
+export class RightArrow extends Arrow {
+  override drawArrowHead(ctx: CanvasRenderingContext2D): void {
+    // Dibuja cabeza de flecha hacia la derecha
+    const headLength = 10; // Longitud de la punta de la flecha
+    const angle = Math.atan2(0, this.endX - this.x);
+
+    ctx.lineTo(
+      this.endX - headLength * Math.cos(angle - Math.PI / 6),
+      this.y - headLength * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.moveTo(this.endX, this.y);
+    ctx.lineTo(
+      this.endX - headLength * Math.cos(angle + Math.PI / 6),
+      this.y - headLength * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.stroke();
+  }
+}
+
+export class LeftArrow extends Arrow {
+  constructor(x: number, y: number, endX: number, text: string = 'Respuesta') {
+    super(x, y, endX, text, true); // true para hacerla punteada
+  }
+
+  override drawArrowHead(ctx: CanvasRenderingContext2D): void {
+    const headLength = 15; // Longitud de la punta de la flecha
+
+    // Calcula la dirección de la línea
+    const angle = Math.atan2(this.y - this.y, this.endX - this.x);
+
+    // Calcula las posiciones de los puntos para la cabeza de la flecha
+    const headAngle1 = angle + Math.PI / 7;
+    const headAngle2 = angle - Math.PI / 7;
+    const headPoint1X = this.endX - headLength * Math.cos(headAngle1);
+    const headPoint1Y = this.y - headLength * Math.sin(headAngle1);
+    const headPoint2X = this.endX - headLength * Math.cos(headAngle2);
+    const headPoint2Y = this.y - headLength * Math.sin(headAngle2);
+
+    // Dibuja la cabeza de la flecha
+    ctx.beginPath();
+    ctx.moveTo(this.endX, this.y); // Empieza en la posición final de la línea, para que la cabeza esté al principio
+    ctx.lineTo(headPoint1X, headPoint1Y);
+    ctx.lineTo(headPoint2X, headPoint2Y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  override draw(ctx: CanvasRenderingContext2D): void {
+    // Configura el estilo para la línea punteada y el color verde
+    if (this.dashed) {
+      ctx.setLineDash([5, 5]);
+    }
+
+    // Dibuja la línea de la flecha
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.endX, this.y);
+    ctx.stroke();
+
+    // Restablece el estilo de línea para futuros dibujos
+    ctx.setLineDash([]);
+
+    // Dibuja el texto sobre la línea
+    ctx.fillText(this.text, (this.x + this.endX) / 2, this.y - 10);
+
+    // Llama a drawArrowHead para dibujar la cabeza de la flecha
+    this.drawArrowHead(ctx);
   }
 }
