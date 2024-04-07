@@ -8,41 +8,50 @@
     </div>
 
     <div class="content-center">
-      <div (mousedown)="mostrarActor()" class="circle-option">
+      <div (click)="addActor()" class="circle-option">
+        <!-- este div es para el actor -->
         <img src="./assets/images/ic_patron.png" alt="icon-patron" />
       </div>
-      <div (mousedown)="mostrarUI()" class="circle-option">
+      <div (click)="addClassElement()" class="circle-option">
+        <!-- este div es para la clase UI -->
         <img src="./assets/images/ic_atm.png" alt="icon-atm" />
       </div>
-      <div (mousedown)="mostrarCC()" class="circle-option">
+      <div (click)="addClassElement()" class="circle-option">
+        <!-- este div es para la clase controller CC -->
         <img src="./assets/images/ic_control.png" alt="icon-control" />
       </div>
-      <div (mousedown)="mostrarCE()" class="circle-option">
+      <div (click)="addClassElement()" class="circle-option">
+        <!-- este div es para la clase entidad CE -->
         <img src="./assets/images/ic_database.png" alt="icon-database" />
       </div>
-      <div (mousedown)="mostrarMsjSend()" class="circle-option">
+      <div class="circle-option">
+        <!-- este div es para la flecha que apunta a la derecha -->
         <img
           src="./assets/images/ic_msj_asincrono.png"
           alt="icon-msj-asincrono"
         />
       </div>
-      <div (mousedown)="mostrarMsjResp()" class="circle-option">
+      <div class="circle-option">
+        <!-- este div es para la flecha de respuesta punteado que apunta a la izquierda-->
         <img
           src="./assets/images/ic_msj_respuesta_asincrono.png"
           alt="icon-msj-respuesta-asincrono"
         />
       </div>
-      <div (mousedown)="crearLoop()" class="circle-option">
+      <div class="circle-option">
+        <!-- este div es para agregar un loop-->
         <img
           class="img-sm"
           src="./assets/images/ic_update.png"
           alt="icon-update"
         />
       </div>
-      <div (mousedown)="crearAlt()" class="circle-option">
+      <div class="circle-option">
+        <!-- este div es para agregar un alt-->
         <img class="img-sm" src="./assets/images/icon.png" alt="icon" />
       </div>
-      <div (mousedown)="insertarTexto()" class="circle-option">
+      <div class="circle-option">
+        <!-- este div es para agregar un mensaje (cuadro de texto) -->
         <img
           class="img-sm"
           src="./assets/images/ic_round_message.png"
