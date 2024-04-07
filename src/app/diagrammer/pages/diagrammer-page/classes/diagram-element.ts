@@ -48,8 +48,27 @@ export class Actor extends DiagramElement {
     // Cuerpo
     ctx.beginPath();
     ctx.moveTo(this.x + this.width / 2, this.y + 20);
-    ctx.lineTo(this.x + this.width / 2, this.y + this.height);
+    ctx.lineTo(this.x + this.width / 2, this.y + 50); // Altura del cuerpo ajustada
     ctx.stroke();
+
+    // Brazos
+    ctx.beginPath();
+    ctx.moveTo(this.x + 5, this.y + 30); // Comienza más a la izquierda para brazo izquierdo
+    ctx.lineTo(this.x + this.width - 5, this.y + 30); // Termina más a la derecha para brazo derecho
+    ctx.stroke();
+
+    // Piernas - Ajustar para mostrar abiertas
+    ctx.beginPath();
+    ctx.moveTo(this.x + this.width / 2, this.y + 50); // Desde la base del cuerpo
+    ctx.lineTo(this.x + 5, this.y + 80); // Pierna izquierda más a la izquierda
+    ctx.moveTo(this.x + this.width / 2, this.y + 50); // Desde la base del cuerpo
+    ctx.lineTo(this.x + this.width - 5, this.y + 80); // Pierna derecha más a la derecha
+    ctx.stroke();
+
+    // Texto "Actor" debajo del cuerpo
+    ctx.font = '16px Arial'; // Aumenta el tamaño del texto
+    ctx.textAlign = 'center';
+    ctx.fillText('Actor', this.x + this.width / 2, this.y + 100); // Ajusta la posición del texto
 
     // Línea de vida
     this.lifeline.draw(ctx);
