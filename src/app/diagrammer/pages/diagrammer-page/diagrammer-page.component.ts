@@ -92,6 +92,8 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   private isDragging: boolean = false; // Añade esta línea
 
   private render(): void {
+    this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
+    this.cx.textAlign = 'center';
     if (!this.cx) return;
     this.cx.clearRect(
       0,

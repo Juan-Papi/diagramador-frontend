@@ -31,12 +31,19 @@ export class Actor extends DiagramElement {
   width: number;
   height: number;
   lifeline: Lifeline;
+  textYPosition: number; // Posición Y del texto "Actor"
 
   constructor(x: number, y: number) {
     super(x, y);
     this.width = 40; // Ancho estándar para el actor
     this.height = 60; // Altura estándar para el actor, sin contar la línea de vida
-    this.lifeline = new Lifeline(x + this.width / 2, y + this.height, 200); // Línea de vida inicial
+    this.textYPosition = this.y + 100; // Ajusta esto según sea necesario
+    // Inicializa la línea de vida para que comience desde la posición Y del texto
+    this.lifeline = new Lifeline(
+      this.x + this.width / 2,
+      this.textYPosition + 15,
+      200
+    );
   }
 
   override draw(ctx: CanvasRenderingContext2D): void {
@@ -66,11 +73,14 @@ export class Actor extends DiagramElement {
     ctx.stroke();
 
     // Texto "Actor" debajo del cuerpo
-    ctx.font = '16px Arial'; // Aumenta el tamaño del texto
-    ctx.textAlign = 'center';
-    ctx.fillText('Actor', this.x + this.width / 2, this.y + 100); // Ajusta la posición del texto
+    // ctx.font = '16px Arial'; // Aumenta el tamaño del texto
+    // ctx.textAlign = 'center';
+    ctx.fillText('Actor', this.x + this.width / 2, this.textYPosition); // Utiliza textYPosition
 
     // Línea de vida
+    // Asegúrate de que la línea de vida también se mueva con el actor y el texto
+    this.lifeline.x = this.x + this.width / 2; // Asegura que la línea de vida se mantenga centrada con el actor
+    this.lifeline.y = this.textYPosition + 15; // Asegura que la línea de vida comience justo debajo del texto
     this.lifeline.draw(ctx);
   }
 
@@ -85,8 +95,9 @@ export class Actor extends DiagramElement {
 
   override move(dx: number, dy: number): void {
     super.move(dx, dy);
-    // Asegura que la lifeline se mueva junto con el actor
+    // Mueve la línea de vida junto con el actor
     this.lifeline.move(dx, dy);
+    this.textYPosition += dy; // Asegúrate de mover también la posición Y del texto
   }
 }
 
