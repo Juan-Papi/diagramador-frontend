@@ -166,6 +166,21 @@ export class Lifeline extends DiagramElement {
     ctx.lineTo(this.x, this.y + this.length);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Dibuja el controlador de redimensionamiento en el extremo inferior de la línea de vida
+    // Define un círculo en el extremo inferior de la línea de vida
+    ctx.beginPath();
+    ctx.arc(this.x, this.y + this.length, 5, 0, Math.PI * 2);
+    //ctx.fillStyle = 'red'; // Puedes elegir el color que prefieras
+    ctx.fill(); // Rellena el círculo con el color seleccionado
+  }
+
+  isResizeControlClicked(x: number, y: number): boolean {
+    // Comprueba si el punto (x, y) está dentro del círculo del controlador
+    const distance = Math.sqrt(
+      (x - this.x) ** 2 + (y - (this.y + this.length)) ** 2
+    );
+    return distance < 5; // Radio del círculo del controlador
   }
 
   override resize(newLength: number): void {

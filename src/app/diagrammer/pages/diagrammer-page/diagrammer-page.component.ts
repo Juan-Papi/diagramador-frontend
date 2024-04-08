@@ -101,6 +101,8 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     nearBottomEdge: boolean;
   } | null = null;
 
+  private resizingLifeline: Lifeline | null = null;
+
   private render(): void {
     this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
     this.cx.textAlign = 'center';
@@ -162,45 +164,94 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    this.selectedElement = null;
-    this.isDragging = false;
-    this.isResizing = false;
-    this.resizingEdges = null;
+    // Resetea el estado
+    this.resetInteractionState();
 
-    for (let element of this.diagramElements) {
-      // Verifica si el clic fue cerca de un borde para redimensionar
-      if ((element instanceof Loop || element instanceof Alt) && element.isNearEdge) {
-        const edges = element.isNearEdge(mouseX, mouseY);
-        if (edges.nearLeftEdge || edges.nearRightEdge || edges.nearTopEdge || edges.nearBottomEdge) {
-          this.selectedElement = element;
-          this.isResizing = true;
-          this.resizingEdges = edges;
-          event.preventDefault(); // Evita que el evento se propague más (por ejemplo, evitar el arrastre de la imagen del navegador)
-          break; // Sale del bucle una vez que encuentra el elemento a redimensionar
-        }
-      }
+    // Primero, verifica si se hizo clic en algún controlador de redimensionamiento de línea de vida
+    this.checkForLifelineResizeControl(mouseX, mouseY);
 
-      // Si no es redimensionamiento, verifica el arrastre
-      if (!this.isResizing && element.containsPoint(mouseX, mouseY)) {
-        this.selectedElement = element;
-        this.dragOffsetX = mouseX - element.x;
-        this.dragOffsetY = mouseY - element.y;
-        this.isDragging = true;
-        event.preventDefault(); // Evita acciones predeterminadas y la propagación del evento
-        break; // Sale del bucle una vez que encuentra el elemento a arrastrar
-      }
+    if (!this.resizingLifeline) {
+      // Procede solo si NO se está interactuando con una línea de vida
+      // Luego, verifica otros tipos de interacciones como mover o redimensionar
+      this.checkForOtherInteractions(mouseX, mouseY, event);
     }
   }
 
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-    if (!this.selectedElement) return;
-
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    if (this.isDragging) {
+    if (this.isDragging && this.selectedElement) {
+      this.performDragging(mouseX, mouseY);
+    } else if (this.isResizing && this.selectedElement) {
+      this.performResizing(mouseX, mouseY);
+    } else if (this.resizingLifeline) {
+      this.performLifelineResizing(mouseY);
+    }
+  }
+
+  @HostListener('mouseup')
+  onMouseUp(): void {
+    this.resetInteractionState();
+  }
+
+  private resetInteractionState(): void {
+    this.isDragging = false;
+    this.isResizing = false;
+    this.resizingEdges = null;
+    this.selectedElement = null;
+    this.resizingLifeline = null;
+  }
+
+  private checkForLifelineResizeControl(mouseX: number, mouseY: number): void {
+    // Busca si el clic fue en el control de redimensionamiento de alguna línea de vida
+    this.diagramElements.forEach((element) => {
+      if (
+        (element instanceof Actor || element instanceof ClassElement) &&
+        element.lifeline.isResizeControlClicked(mouseX, mouseY)
+      ) {
+        this.resizingLifeline = element.lifeline;
+      }
+    });
+  }
+
+  private checkForOtherInteractions(
+    mouseX: number,
+    mouseY: number,
+    event: MouseEvent
+  ): void {
+    // Itera sobre los elementos para ver si se debe mover o redimensionar alguno
+    this.diagramElements.forEach((element) => {
+      if (element instanceof Loop || element instanceof Alt) {
+        const edges = element.isNearEdge(mouseX, mouseY);
+        if (
+          edges.nearLeftEdge ||
+          edges.nearRightEdge ||
+          edges.nearTopEdge ||
+          edges.nearBottomEdge
+        ) {
+          this.selectedElement = element;
+          this.isResizing = true;
+          this.resizingEdges = edges;
+          event.preventDefault();
+          return;
+        }
+      }
+      if (!this.isResizing && element.containsPoint(mouseX, mouseY)) {
+        this.selectedElement = element;
+        this.dragOffsetX = mouseX - element.x;
+        this.dragOffsetY = mouseY - element.y;
+        this.isDragging = true;
+        event.preventDefault();
+      }
+    });
+  }
+
+  private performDragging(mouseX: number, mouseY: number): void {
+    if (this.selectedElement) {
+      // Asegura que selectedElement no es null
       const dx = mouseX - (this.selectedElement.x + this.dragOffsetX);
       const dy = mouseY - (this.selectedElement.y + this.dragOffsetY);
       this.selectedElement.move(dx, dy);
@@ -208,12 +259,11 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
       this.dragOffsetX = mouseX - this.selectedElement.x;
       this.dragOffsetY = mouseY - this.selectedElement.y;
       this.render();
-    } else if (
-      (this.isResizing && this.selectedElement instanceof Loop) ||
-      this.selectedElement instanceof Alt
-    ) {
-      // Aquí asumimos que tienes un método `resize` en tus clases Loop y Alt
-      // Este método debería ajustar el tamaño basado en la posición actual del mouse
+    }
+  }
+
+  private performResizing(mouseX: number, mouseY: number): void {
+    if (this.selectedElement && this.resizingEdges) {
       const newWidth = Math.max(20, mouseX - this.selectedElement.x); // Evita tamaños negativos o demasiado pequeños
       const newHeight = Math.max(20, mouseY - this.selectedElement.y);
       this.selectedElement.resize(newWidth, newHeight);
@@ -221,16 +271,12 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  @HostListener('mouseup')
-  onMouseUp(): void {
-    if (this.isDragging) {
-      this.isDragging = false;
-      this.selectedElement = null;
-    }
-    if (this.isResizing) {
-      this.isResizing = false;
-      this.resizingEdges = null; // Reinicia las aristas de redimensionado
-      this.selectedElement = null; // Opcional, dependiendo de si deseas mantener seleccionado el elemento
+  private performLifelineResizing(mouseY: number): void {
+    // Ajusta la longitud de la línea de vida solo si se está redimensionando específicamente una línea de vida
+    if (this.resizingLifeline) {
+      const newLength = Math.max(20, mouseY - this.resizingLifeline.y); // La longitud debe ser al menos 20 para evitar ser demasiado pequeña
+      this.resizingLifeline.resize(newLength);
+      this.render();
     }
   }
 }
