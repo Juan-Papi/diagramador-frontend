@@ -92,6 +92,14 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   private dragOffsetX: number = 0;
   private dragOffsetY: number = 0;
   private isDragging: boolean = false; // Añade esta línea
+  // Añade las nuevas propiedades
+  private isResizing: boolean = false;
+  private resizingEdges: {
+    nearLeftEdge: boolean;
+    nearRightEdge: boolean;
+    nearTopEdge: boolean;
+    nearBottomEdge: boolean;
+  } | null = null;
 
   private render(): void {
     this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
@@ -151,45 +159,78 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent): void {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
 
     this.selectedElement = null;
-    this.diagramElements.forEach((element) => {
-      if (element.containsPoint(x, y)) {
-        this.selectedElement = element;
-        this.dragOffsetX = x - element.x; // Aquí se usa dragOffsetX
-        this.dragOffsetY = y - element.y; // Aquí se usa dragOffsetY
-        event.preventDefault(); // Evita que el evento se propague más (por ejemplo, evitar el arrastre de la imagen del navegador)
-      }
-    });
+    this.isDragging = false;
+    this.isResizing = false;
+    this.resizingEdges = null;
 
-    // Asegúrate de establecer isDragging a true si un elemento fue seleccionado para arrastre
-    if (this.selectedElement) {
-      this.isDragging = true;
+    for (let element of this.diagramElements) {
+      // Verifica si el clic fue cerca de un borde para redimensionar
+      if ((element instanceof Loop || element instanceof Alt) && element.isNearEdge) {
+        const edges = element.isNearEdge(mouseX, mouseY);
+        if (edges.nearLeftEdge || edges.nearRightEdge || edges.nearTopEdge || edges.nearBottomEdge) {
+          this.selectedElement = element;
+          this.isResizing = true;
+          this.resizingEdges = edges;
+          event.preventDefault(); // Evita que el evento se propague más (por ejemplo, evitar el arrastre de la imagen del navegador)
+          break; // Sale del bucle una vez que encuentra el elemento a redimensionar
+        }
+      }
+
+      // Si no es redimensionamiento, verifica el arrastre
+      if (!this.isResizing && element.containsPoint(mouseX, mouseY)) {
+        this.selectedElement = element;
+        this.dragOffsetX = mouseX - element.x;
+        this.dragOffsetY = mouseY - element.y;
+        this.isDragging = true;
+        event.preventDefault(); // Evita acciones predeterminadas y la propagación del evento
+        break; // Sale del bucle una vez que encuentra el elemento a arrastrar
+      }
     }
   }
 
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-    if (!this.selectedElement || !this.isDragging) return;
+    if (!this.selectedElement) return;
 
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    const newX = event.clientX - rect.left - this.dragOffsetX;
-    const newY = event.clientY - rect.top - this.dragOffsetY;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
 
-    const dx = newX - this.selectedElement.x;
-    const dy = newY - this.selectedElement.y;
-
-    this.selectedElement.move(dx, dy);
-    this.render();
+    if (this.isDragging) {
+      const dx = mouseX - (this.selectedElement.x + this.dragOffsetX);
+      const dy = mouseY - (this.selectedElement.y + this.dragOffsetY);
+      this.selectedElement.move(dx, dy);
+      // Ajusta dragOffset para el próximo movimiento
+      this.dragOffsetX = mouseX - this.selectedElement.x;
+      this.dragOffsetY = mouseY - this.selectedElement.y;
+      this.render();
+    } else if (
+      (this.isResizing && this.selectedElement instanceof Loop) ||
+      this.selectedElement instanceof Alt
+    ) {
+      // Aquí asumimos que tienes un método `resize` en tus clases Loop y Alt
+      // Este método debería ajustar el tamaño basado en la posición actual del mouse
+      const newWidth = Math.max(20, mouseX - this.selectedElement.x); // Evita tamaños negativos o demasiado pequeños
+      const newHeight = Math.max(20, mouseY - this.selectedElement.y);
+      this.selectedElement.resize(newWidth, newHeight);
+      this.render();
+    }
   }
 
   @HostListener('mouseup')
   onMouseUp(): void {
     if (this.isDragging) {
-      this.isDragging = false; // Reinicia isDragging a false
-      this.selectedElement = null; // Reinicia el elemento seleccionado
+      this.isDragging = false;
+      this.selectedElement = null;
+    }
+    if (this.isResizing) {
+      this.isResizing = false;
+      this.resizingEdges = null; // Reinicia las aristas de redimensionado
+      this.selectedElement = null; // Opcional, dependiendo de si deseas mantener seleccionado el elemento
     }
   }
 }

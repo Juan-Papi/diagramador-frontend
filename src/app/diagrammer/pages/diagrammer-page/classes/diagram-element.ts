@@ -263,14 +263,33 @@ export class Loop extends DiagramElement {
     this.elements = []; // Elementos contenidos dentro del Loop
   }
 
+  drawResizeHandle(ctx: CanvasRenderingContext2D): void {
+    const size = 10; // Tamaño del cuadrito de redimensionamiento
+    const x = this.x + this.width - size;
+    const y = this.y + this.height - size;
+
+    ctx.fillStyle = 'black'; // Color del cuadrito
+    ctx.fillRect(x, y, size, size);
+  }
+
   override draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.stroke();
 
     ctx.fillText('[Loop]', this.x + 5, this.y + 15); // Etiqueta para el loop
-
+    this.drawResizeHandle(ctx);
     this.elements.forEach((element) => element.draw(ctx)); // Dibuja cada elemento contenido
+  }
+
+  isResizeClick(x: number, y: number): boolean {
+    const size = 10;
+    const resizeX = this.x + this.width - size;
+    const resizeY = this.y + this.height - size;
+
+    return (
+      x >= resizeX && x <= resizeX + size && y >= resizeY && y <= resizeY + size
+    );
   }
 
   override containsPoint(x: number, y: number): boolean {
@@ -298,6 +317,17 @@ export class Loop extends DiagramElement {
     this.height = newHeight;
     // Opcional: Ajustar la posición y tamaño de los elementos contenidos
   }
+
+  // Método nuevo para detectar si el cursor está cerca de un borde
+  isNearEdge(x: number, y: number) {
+    const edgeThreshold = 10; // La distancia máxima en píxeles del borde para considerarse "cerca"
+    const nearLeftEdge = Math.abs(x - this.x) < edgeThreshold;
+    const nearRightEdge = Math.abs(x - (this.x + this.width)) < edgeThreshold;
+    const nearTopEdge = Math.abs(y - this.y) < edgeThreshold;
+    const nearBottomEdge = Math.abs(y - (this.y + this.height)) < edgeThreshold;
+
+    return { nearLeftEdge, nearRightEdge, nearTopEdge, nearBottomEdge };
+  }
 }
 
 export class Alt extends DiagramElement {
@@ -312,13 +342,22 @@ export class Alt extends DiagramElement {
     this.elements = []; // Elementos contenidos dentro del Alt
   }
 
+  drawResizeHandle(ctx: CanvasRenderingContext2D): void {
+    const size = 10; // Tamaño del cuadrito de redimensionamiento
+    const x = this.x + this.width - size;
+    const y = this.y + this.height - size;
+
+    ctx.fillStyle = 'black'; // Color del cuadrito
+    ctx.fillRect(x, y, size, size);
+  }
+
   override draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.stroke();
 
-    ctx.fillText('[Alt]', this.x + 5, this.y + 15); // Etiqueta para el Alt
-
+    ctx.fillText('[Alt]', this.x + 5, this.y + 15); // Etiqueta para el loop
+    this.drawResizeHandle(ctx);
     this.elements.forEach((element) => element.draw(ctx)); // Dibuja cada elemento contenido
   }
 
@@ -346,6 +385,17 @@ export class Alt extends DiagramElement {
     this.width = newWidth;
     this.height = newHeight;
     // Opcional: Ajustar la posición y tamaño de los elementos contenidos
+  }
+
+  // Método nuevo para detectar si el cursor está cerca de un borde
+  isNearEdge(x: number, y: number) {
+    const edgeThreshold = 10; // Define cuán cerca debe estar el cursor al borde para considerarse "cerca"
+    const nearLeftEdge = Math.abs(x - this.x) < edgeThreshold;
+    const nearRightEdge = Math.abs(x - (this.x + this.width)) < edgeThreshold;
+    const nearTopEdge = Math.abs(y - this.y) < edgeThreshold;
+    const nearBottomEdge = Math.abs(y - (this.y + this.height)) < edgeThreshold;
+
+    return { nearLeftEdge, nearRightEdge, nearTopEdge, nearBottomEdge };
   }
 }
 
