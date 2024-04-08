@@ -279,4 +279,35 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
       this.render();
     }
   }
+  //Edicion de textos
+  @HostListener('dblclick', ['$event'])
+  onDoubleClick(event: MouseEvent): void {
+    const canvasRect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const mouseX = event.clientX - canvasRect.left;
+    const mouseY = event.clientY - canvasRect.top;
+
+    this.selectedElement = this.getElementAtPosition(mouseX, mouseY);
+
+    if (this.selectedElement) {
+      this.editElementText(this.selectedElement);
+    }
+  }
+
+  private editElementText(element: DiagramElement): void {
+    const newText = prompt('Ingrese el nuevo texto:', element.text);
+    if (newText !== null && newText.trim() !== '') {
+      element.text = newText.trim();
+      this.render();
+    }
+  }
+
+  private getElementAtPosition(x: number, y: number): DiagramElement | null {
+    // Itera en orden inverso para seleccionar el elemento más "superior" en caso de superposición
+    for (let i = this.diagramElements.length - 1; i >= 0; i--) {
+      if (this.diagramElements[i].containsPoint(x, y)) {
+        return this.diagramElements[i];
+      }
+    }
+    return null; // Ningún elemento encontrado en esta posición
+  }
 }

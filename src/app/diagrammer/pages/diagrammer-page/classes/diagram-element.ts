@@ -2,11 +2,13 @@ export class DiagramElement {
   x: number;
   y: number;
   isSelected: boolean;
+  text: string = ''; // Añade esta línea
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, text: string = '') {
     this.x = x;
     this.y = y;
     this.isSelected = false; // Indica si el elemento está seleccionado
+    this.text = text; // Y establece el texto
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -33,8 +35,8 @@ export class Actor extends DiagramElement {
   lifeline: Lifeline;
   textYPosition: number; // Posición Y del texto "Actor"
 
-  constructor(x: number, y: number) {
-    super(x, y);
+  constructor(x: number, y: number, text: string = 'Actor') {
+    super(x, y, text);
     this.width = 40; // Ancho estándar para el actor
     this.height = 60; // Altura estándar para el actor, sin contar la línea de vida
     this.textYPosition = this.y + 100; // Ajusta esto según sea necesario
@@ -75,7 +77,7 @@ export class Actor extends DiagramElement {
     // Texto "Actor" debajo del cuerpo
     // ctx.font = '16px Arial'; // Aumenta el tamaño del texto
     // ctx.textAlign = 'center';
-    ctx.fillText('Actor', this.x + this.width / 2, this.textYPosition); // Utiliza textYPosition
+    ctx.fillText(this.text, this.x + this.width / 2, this.textYPosition); // Utiliza textYPosition
 
     // Línea de vida
     // Asegúrate de que la línea de vida también se mueva con el actor y el texto
@@ -104,7 +106,7 @@ export class Actor extends DiagramElement {
 export class ClassElement extends DiagramElement {
   width: number;
   height: number;
-  text: string;
+  override text: string;
   lifeline: Lifeline;
 
   constructor(
@@ -208,7 +210,7 @@ export class Lifeline extends DiagramElement {
 
 export class Message extends DiagramElement {
   width: number;
-  text: string;
+  override text: string;
 
   // Estas propiedades almacenan las dimensiones calculadas del rectángulo de texto
   private rectWidth: number = 0;
@@ -416,7 +418,7 @@ export class Alt extends DiagramElement {
 
 class Arrow extends DiagramElement {
   endX: number;
-  text: string;
+  override text: string;
   dashed: boolean;
 
   constructor(
