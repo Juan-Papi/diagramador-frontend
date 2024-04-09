@@ -302,12 +302,131 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   }
 
   private getElementAtPosition(x: number, y: number): DiagramElement | null {
-    // Itera en orden inverso para seleccionar el elemento más "superior" en caso de superposición
+    // Itera en orden inverso para   seleccionar el elemento más "superior" en caso de superposición
     for (let i = this.diagramElements.length - 1; i >= 0; i--) {
       if (this.diagramElements[i].containsPoint(x, y)) {
         return this.diagramElements[i];
       }
     }
     return null; // Ningún elemento encontrado en esta posición
+  }
+
+  saveDiagramState(): string {
+    const diagramState = this.diagramElements.map((element) => {
+      const baseState = {
+        type: element.constructor.name,
+        x: element.x,
+        y: element.y,
+        text: element.text,
+      };
+
+      if (element instanceof Actor || element instanceof ClassElement) {
+        return {
+          ...baseState,
+          width: element.width,
+          height: element.height,
+          lifelineLength: element.lifeline.length,
+        };
+      } else if (element instanceof Message) {
+        return { ...baseState, width: element.width };
+      } else if (element instanceof Loop || element instanceof Alt) {
+        return { ...baseState, width: element.width, height: element.height };
+      } else if (
+        element instanceof RightArrow ||
+        element instanceof LeftArrow
+      ) {
+        return { ...baseState, endX: element.endX, dashed: element.dashed };
+      }
+
+      return baseState;
+    });
+
+    return JSON.stringify(diagramState);
+  }
+
+  loadDiagramState(diagramJSON: string): void {
+    const diagramState = JSON.parse(diagramJSON);
+    this.diagramElements = diagramState.map((elementState: any) => {
+      let element;
+      switch (elementState.type) {
+        case 'Actor':
+          element = new Actor(
+            elementState.x,
+            elementState.y,
+            elementState.text
+          );
+          element.width = elementState.width;
+          element.height = elementState.height;
+          element.lifeline = new Lifeline(
+            elementState.x + elementState.width / 2,
+            elementState.y + 100 + 15,
+            elementState.lifelineLength
+          );
+          break;
+        case 'ClassElement':
+          element = new ClassElement(
+            elementState.x,
+            elementState.y,
+            elementState.width,
+            elementState.height,
+            elementState.text
+          );
+          element.lifeline = new Lifeline(
+            elementState.x + elementState.width / 2,
+            elementState.y + elementState.height,
+            elementState.lifelineLength
+          );
+          break;
+        case 'Message':
+          element = new Message(
+            elementState.x,
+            elementState.y,
+            elementState.width,
+            elementState.text
+          );
+          break;
+        case 'Loop':
+        case 'Alt':
+          element =
+            elementState.type === 'Loop'
+              ? new Loop(
+                  elementState.x,
+                  elementState.y,
+                  elementState.width,
+                  elementState.height
+                )
+              : new Alt(
+                  elementState.x,
+                  elementState.y,
+                  elementState.width,
+                  elementState.height
+                );
+          break;
+        case 'RightArrow':
+        case 'LeftArrow':
+          element =
+            elementState.type === 'RightArrow'
+              ? new RightArrow(
+                  elementState.x,
+                  elementState.y,
+                  elementState.endX,
+                  elementState.text
+                )
+              : new LeftArrow(
+                  elementState.x,
+                  elementState.y,
+                  elementState.endX,
+                  elementState.text
+                );
+          element.dashed = elementState.dashed;
+          break;
+        default:
+          throw new Error(`Unrecognized element type: ${elementState.type}`);
+      }
+
+      return element;
+    });
+
+    this.render();
   }
 }
