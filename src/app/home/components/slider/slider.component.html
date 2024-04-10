@@ -16,7 +16,7 @@
             <img src="./assets/images/bg-01.jpg" alt="icon_project">
             <div class="card-description">
               <div class="card-title">
-                <h4>Proyecto: {{ card.name }}</h4>
+                <h4>Proyecto: <span class="link" (click)="goToDiagram(card)">{{ card.name }}</span></h4>
               </div>
               <div class="card-text">
                 <p>

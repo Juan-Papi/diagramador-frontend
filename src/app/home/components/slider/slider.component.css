@@ -92,4 +92,10 @@ button img {
   font-size: 1.5rem;
 }
 
+.link {
+  cursor: pointer;
+}
+.link:hover {
+  color: var(--primary-color);
+}
 

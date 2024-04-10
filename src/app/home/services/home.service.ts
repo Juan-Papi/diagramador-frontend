@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DiagramsResponse } from '../interfaces/diagrams-response.interface';
 import { catchError, map, Observable, of, Subject, tap, throwError } from 'rxjs';
+import { DiagramUpdateParams } from 'src/app/shared/interfaces/diagram.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -98,11 +99,12 @@ export class HomeService {
   // }
   
   // Actualizar un proyecto
-  updateDiagram(id: number, name: string, description: string): Observable<boolean> {
+  updateDiagram(params: DiagramUpdateParams): Observable<boolean> {
+    const { id, name, description, data } = params;
     const url = `${this.baseUrl}/diagram/update/${id}`;
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = { name, description };
+    const body = { name, description, data };
     
     return this.http.patch<boolean>(url, body, { headers }).pipe(
       catchError((err) => {

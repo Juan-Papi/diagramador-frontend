@@ -7,6 +7,7 @@ import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.inte
 import Swal from 'sweetalert2';
 import { HomeService } from 'src/app/home/services/home.service';
 import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
+import { DiagramUpdateParams } from '../../interfaces/diagram.interface';
 
 @Component({
   selector: 'app-custom-modal',
@@ -92,9 +93,14 @@ export class CustomModalComponent implements OnInit {
 
   updateDiagram(): void {
     const id = this.diagram!.id;
-    const { name, description } = this.diagramForm.value;
+    // const { name, description } = this.diagramForm.value;
+    
+    const params: DiagramUpdateParams = {
+      id: id,
+      ...this.diagramForm.value,
+    }
 
-    this.homeService.updateDiagram(id, name, description).subscribe({
+    this.homeService.updateDiagram(params).subscribe({
       next: (resp) => {
         if (resp) {
           this.homeService.getProyects().subscribe({

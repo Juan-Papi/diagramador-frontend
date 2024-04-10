@@ -3,6 +3,8 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { register, SwiperContainer } from 'swiper/element/bundle';
 import { SwiperOptions } from 'swiper/types';
 import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
+import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
+import { Router } from '@angular/router';
 register();
 
 @Component({
@@ -14,6 +16,12 @@ export class SliderComponent implements AfterViewInit {
   swiper?: SwiperContainer | null;
   @Input() cards: DiagramsResponse[] = [];
   
+  constructor(
+    private diagrammerService: DiagrammerService,
+    private router: Router,
+  ) {
+    
+  }
 
   ngAfterViewInit(): void {
     // swiper element
@@ -42,15 +50,15 @@ export class SliderComponent implements AfterViewInit {
           slidesPerView: 5,
         },
       },
-      on: {
-        init() {
-          // ...
-        },
-      },
     };
 
     Object.assign(swiperEl!, swiperParams);
     this.swiper = swiperEl;
     this.swiper?.initialize();
+  }
+  
+  goToDiagram(diagram: DiagramsResponse) {
+    this.diagrammerService.setCurrentDiagram(diagram);
+    this.router.navigate(['/diagrammer']);
   }
 }

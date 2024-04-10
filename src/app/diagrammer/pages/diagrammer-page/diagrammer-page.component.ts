@@ -21,6 +21,7 @@ import {
   RightArrow,
   LeftArrow,
 } from './classes/diagram-element';
+import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
 @Component({
   selector: 'app-diagrammer-page',
   templateUrl: './diagrammer-page.component.html',
@@ -33,7 +34,7 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   icon: string = Icons.success;
   title: string = '¡Guardado!';
   description: string = 'Los cambios se han guardado correctamente';
-  currentDiagram?: Diagram;
+  currentDiagram?: DiagramsResponse;
 
   constructor(
     private modalService: ModalService,
@@ -46,6 +47,9 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initCanvas();
+    if (this.currentDiagram?.data) {
+      this.loadDiagramState(this.currentDiagram.data);
+    }
   }
 
   private initCanvas(): void {
@@ -75,6 +79,8 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
 
   openModal(): void {
     this.modalService.openModal();
+    const data = this.saveDiagramState();
+    this.diagrammerService.setDataCurrentDiagram(data);
   }
 
   openLink(): void {

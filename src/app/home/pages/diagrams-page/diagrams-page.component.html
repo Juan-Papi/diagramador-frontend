@@ -69,7 +69,7 @@
                   | paginate : { itemsPerPage: limit, currentPage: page }
               "
             >
-              <td class="align-middle">{{ diagram.name }}</td>
+              <td class="align-middle"><span class="link" (click)="goToDiagram(diagram)">{{ diagram.name }}</span></td>
               <td class="align-middle">{{ diagram.description }}</td>
               <td class="align-middle">
                 {{ diagram.createdAt | date : "longDate" : "" : "es-BO" }}

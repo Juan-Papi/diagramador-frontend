@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalService } from 'src/app/shared/services/modal.service';
+import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-diagrams-page',
@@ -16,12 +18,13 @@ export class DiagramsPageComponent {
   limit: number = 10;
   searchForm!: FormGroup;
   projects: DiagramsResponse[] = [];
-  // dates: string[] = [];
   
   constructor(
     private homeService: HomeService,
     private modalService: ModalService,
+    private diagrammerService: DiagrammerService,
     private fb: FormBuilder,
+    private router: Router,
   ) {}
   
   ngOnInit(): void {
@@ -35,7 +38,6 @@ export class DiagramsPageComponent {
     })
     
     this.projects = [...this.diagrams];
-    // this.dates = this.getUniqueDates();
     
     this.searchForm.valueChanges.subscribe(() => {
       let { search, date } = this.searchForm.value;
@@ -47,6 +49,11 @@ export class DiagramsPageComponent {
   
   get diagrams(): DiagramsResponse[] {
     return this.homeService.proyectsList;
+  }
+  
+  goToDiagram(diagram: DiagramsResponse) {
+    this.diagrammerService.setCurrentDiagram(diagram);
+    this.router.navigate(['/diagrammer']);
   }
   
   deleteProyect(id: number): void {
@@ -105,9 +112,6 @@ export class DiagramsPageComponent {
     this.modalService.openModalEdit(diagram);
   }
   
-  editProyect(id: number): void {}
-  
-  
   // Filtra los proyectos por nombre y fecha
   filterProjects(searchTerm: string, searchDate: string) {
     this.projects = [...this.diagrams];
@@ -128,18 +132,6 @@ export class DiagramsPageComponent {
     }
     this.page = 1;
   }
-  
-  // Obtiene las fechas únicas de los proyectos
-  // getUniqueDates(): string[] {
-  //   const uniqueDates = new Set<string>();
-  //   this.diagrams.forEach(project => {
-  //     const date = this.formatDate(project.createdAt);
-  //     uniqueDates.add(date);
-  //   });
-  //   return Array.from(uniqueDates);
-  // }
-  
-  
   
   // Formatea la fecha en formato 'dd/mm/yyyy'
   formatDate(date: string): string {

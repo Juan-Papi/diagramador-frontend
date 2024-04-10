@@ -4,21 +4,27 @@ import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
 import { Diagram } from 'src/app/shared/interfaces/diagram.interface';
 import { environment } from 'src/environments/environment';
 import { Link } from '../interfaces/link.interface';
+import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DiagrammerService {
   private readonly baseUrl: string = environment.baseUrl;
-  private currentDiagram?: Diagram;
+  
+  private currentDiagram?: DiagramsResponse;
   private link = new Subject<Link>();
 
-  getCurrentDiagram(): Diagram | undefined {
+  getCurrentDiagram(): DiagramsResponse | undefined {
     return this.currentDiagram;
   }
 
-  setCurrentDiagram(diagram: Diagram): void {
+  setCurrentDiagram(diagram: DiagramsResponse): void {
     this.currentDiagram = diagram;
+  }
+  
+  setDataCurrentDiagram(data: string) {
+    this.currentDiagram!.data = data;
   }
 
   getLink(): Observable<Link> {
@@ -43,4 +49,7 @@ export class DiagrammerService {
       })
     );
   }
+  
+  
+  
 }

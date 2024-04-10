@@ -10,7 +10,7 @@ export interface DiagramsResponse {
   createdAt:   string;
   updatedAt:   null;
   user:        User;
-  coWorkers:   any[];
+  coWorkers?:   any[];
 }
 
 
