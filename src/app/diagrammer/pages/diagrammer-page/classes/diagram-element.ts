@@ -506,33 +506,37 @@ export class LeftArrow extends Arrow {
   }
 
   override drawArrowHead(ctx: CanvasRenderingContext2D): void {
-    const headLength = 15; // Longitud de la punta de la flecha
+    const headLength = 25; // Longitud de la punta de la flecha ajustada para mayor visibilidad
 
     // Calcula la dirección de la línea
     const angle = Math.atan2(this.y - this.y, this.endX - this.x);
 
-    // Calcula las posiciones de los puntos para la cabeza de la flecha
-    const headAngle1 = angle + Math.PI / 7;
-    const headAngle2 = angle - Math.PI / 7;
+    // Ajusta los ángulos para hacer la cabeza de la flecha un poco más cerrada
+    const headAngle1 = angle + Math.PI / 8;
+    const headAngle2 = angle - Math.PI / 8;
     const headPoint1X = this.endX - headLength * Math.cos(headAngle1);
     const headPoint1Y = this.y - headLength * Math.sin(headAngle1);
     const headPoint2X = this.endX - headLength * Math.cos(headAngle2);
     const headPoint2Y = this.y - headLength * Math.sin(headAngle2);
 
+    // Configura el grosor de la línea para la cabeza de la flecha
+    //ctx.lineWidth = 2; // Aumenta el grosor de la línea
+
     // Dibuja la cabeza de la flecha
     ctx.beginPath();
-    ctx.moveTo(this.endX, this.y); // Empieza en la posición final de la línea, para que la cabeza esté al principio
-    ctx.lineTo(headPoint1X, headPoint1Y);
-    ctx.lineTo(headPoint2X, headPoint2Y);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(this.endX, this.y); // Empieza en la posición final de la línea
+    ctx.lineTo(headPoint1X, headPoint1Y); // Dibuja la primera línea de la cabeza
+    ctx.moveTo(this.endX, this.y); // Vuelve al punto de inicio para la segunda línea
+    ctx.lineTo(headPoint2X, headPoint2Y); // Dibuja la segunda línea de la cabeza
+    ctx.stroke(); // Dibuja el contorno de la cabeza de la flecha sin cerrar el triángulo
   }
 
   override draw(ctx: CanvasRenderingContext2D): void {
-    // Configura el estilo para la línea punteada y el color verde
+    // Configura el estilo para la línea punteada y el grosor
     if (this.dashed) {
       ctx.setLineDash([5, 5]);
     }
+    ctx.lineWidth = 1.5; // Configura un grosor ligeramente mayor para la línea principal
 
     // Dibuja la línea de la flecha
     ctx.beginPath();
@@ -548,5 +552,91 @@ export class LeftArrow extends Arrow {
 
     // Llama a drawArrowHead para dibujar la cabeza de la flecha
     this.drawArrowHead(ctx);
+  }
+}
+
+export class RightArrowSync extends Arrow {
+  override drawArrowHead(ctx: CanvasRenderingContext2D): void {
+    // Dibuja la cabeza de la flecha hacia la derecha y llena
+    const headLength = 20; // Longitud de la punta de la flecha aumentada para hacerla más grande
+    const angle = Math.atan2(0, this.endX - this.x); // Ángulo de la flecha
+
+    // Inicia la cabeza de la flecha
+    ctx.beginPath();
+    ctx.moveTo(this.endX, this.y); // Mueve el punto de inicio al final de la línea de la flecha
+
+    // Primera línea de la cabeza de la flecha
+    ctx.lineTo(
+      this.endX - headLength * Math.cos(angle - Math.PI / 6),
+      this.y - headLength * Math.sin(angle - Math.PI / 6)
+    );
+
+    // Segunda línea de la cabeza de la flecha
+    ctx.lineTo(
+      this.endX - headLength * Math.cos(angle + Math.PI / 6),
+      this.y - headLength * Math.sin(angle + Math.PI / 6)
+    );
+
+    // Conecta de nuevo al final de la flecha para cerrar la forma
+    ctx.closePath(); // Cierra el camino trazado para formar una forma sólida
+
+    // Rellena la cabeza de la flecha
+    ctx.fill(); // Usa fill() para rellenar la forma
+  }
+}
+
+export class RightArrowRecursive extends Arrow {
+  headLength = 15; // Longitud de la punta de la flecha
+
+  override drawArrowHead(ctx: CanvasRenderingContext2D): void {
+    // Altura desde el centro de la base hasta la punta del triángulo isósceles
+    const triangleHeight = (this.headLength * Math.sqrt(3)) / 2;
+
+    // El centro de la base del triángulo estará al final de la línea vertical
+    const baseCenterX = this.x - 9; // Movemos la base del triángulo un poco hacia la izquierda
+    const baseCenterY = this.y + triangleHeight + 2;
+
+    // Dibuja la cabeza de la flecha llena como un triángulo isósceles
+    ctx.beginPath();
+
+    // Inicia en el vértice superior del triángulo (punta de la flecha)
+    ctx.moveTo(baseCenterX, baseCenterY + triangleHeight);
+    // Dibuja los vértices inferiores del triángulo (base)
+    ctx.lineTo(baseCenterX + this.headLength / 2, baseCenterY);
+    ctx.lineTo(baseCenterX + this.headLength / 2, baseCenterY + 25);
+
+    ctx.closePath(); // Cierra el triángulo
+    ctx.fill(); // Rellena la cabeza de la flecha
+  }
+
+  override draw(ctx: CanvasRenderingContext2D): void {
+    const halfLength = (this.endX - this.x) / 2;
+    const verticalLength = (this.headLength * Math.sqrt(3)) / 2; // Longitud de la línea vertical ajustada para la cabeza de la flecha
+
+    // Dibuja la línea horizontal desde el inicio hasta el punto medio
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x + halfLength, this.y);
+    ctx.stroke();
+
+    // Dibuja la línea vertical hacia abajo desde el punto medio, ajustada para la cabeza de la flecha
+    ctx.beginPath();
+    ctx.moveTo(this.x + halfLength, this.y);
+    ctx.lineTo(this.x + halfLength, this.y + verticalLength + this.headLength);
+    ctx.stroke();
+
+    // Dibuja la línea horizontal de regreso al inicio
+    ctx.beginPath();
+    ctx.moveTo(this.x + halfLength, this.y + verticalLength + this.headLength);
+    ctx.lineTo(this.x, this.y + verticalLength + this.headLength);
+    ctx.stroke();
+
+    // Dibuja la cabeza de la flecha en el extremo inferior de la línea vertical
+    this.drawArrowHead(ctx);
+
+    // Dibuja el texto, si es necesario
+    if (this.text) {
+      ctx.fillText(this.text, this.x + halfLength / 2, this.y - 10); // Centrado sobre la primera mitad de la línea horizontal
+    }
   }
 }

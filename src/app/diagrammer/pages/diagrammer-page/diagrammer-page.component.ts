@@ -20,6 +20,8 @@ import {
   DiagramElement,
   RightArrow,
   LeftArrow,
+  RightArrowSync,
+  RightArrowRecursive,
 } from './classes/diagram-element';
 import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
 @Component({
@@ -112,6 +114,7 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   private render(): void {
     this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
     this.cx.textAlign = 'center';
+    this.cx.lineWidth = 2; // Aumenta el grosor de la línea
     if (!this.cx) return;
     this.cx.clearRect(
       0,
@@ -154,12 +157,26 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
 
   public addRightArrow(): void {
     const arrow = new RightArrow(100, 200, 250); // Posición y longitud ejemplo
+    //const arrow = new RightArrowSync(100, 200, 250); // Posición y longitud ejemplo
+    // const arrow = new RightArrowRecursive(100, 200, 250); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
 
   public addLeftArrow(): void {
     const arrow = new LeftArrow(250, 200, 100); // Posición y longitud ejemplo
+    this.diagramElements.push(arrow);
+    this.render();
+  }
+
+  public addRightArrowSync(): void {
+    const arrow = new RightArrowSync(100, 200, 250); // Posición y longitud ejemplo
+    this.diagramElements.push(arrow);
+    this.render();
+  }
+
+  public addRightArrowRecursive(): void {
+    const arrow = new RightArrowRecursive(100, 200, 250); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
