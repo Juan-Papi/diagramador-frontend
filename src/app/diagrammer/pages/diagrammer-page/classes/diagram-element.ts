@@ -416,7 +416,7 @@ export class Alt extends DiagramElement {
   }
 }
 
-class Arrow extends DiagramElement {
+export abstract class Arrow extends DiagramElement {
   endX: number;
   override text: string;
   dashed: boolean;
@@ -434,6 +434,18 @@ class Arrow extends DiagramElement {
     this.dashed = dashed;
   }
 
+  isNearEnds(x: number, y: number): 'start' | 'end' | null {
+    const threshold = 10; // Sensibilidad para detectar clics cerca de los extremos
+    if (Math.abs(x - this.x) < threshold && Math.abs(y - this.y) < threshold) {
+      return 'start';
+    } else if (
+      Math.abs(x - this.endX) < threshold &&
+      Math.abs(y - this.y) < threshold
+    ) {
+      return 'end';
+    }
+    return null;
+  }
   override draw(ctx: CanvasRenderingContext2D): void {
     if (this.dashed) {
       ctx.setLineDash([5, 5]);
@@ -446,22 +458,18 @@ class Arrow extends DiagramElement {
     ctx.lineTo(this.endX, this.y);
     ctx.stroke();
 
-    // Reset dash to solid
-    ctx.setLineDash([]);
+    this.drawArrowHead(ctx); // Ensure this method is called
 
-    // Add arrow head
-    this.drawArrowHead(ctx);
-
-    // Draw text
     ctx.fillText(this.text, (this.x + this.endX) / 2, this.y - 10);
+    ctx.setLineDash([]); // Always reset dash to solid after drawing
   }
 
+  // Default implementation: should be overridden in subclasses
   drawArrowHead(ctx: CanvasRenderingContext2D): void {
-    // To be implemented in subclasses
+    throw new Error('DrawArrowHead method not implemented');
   }
 
   override containsPoint(x: number, y: number): boolean {
-    // Simplified check, primarily for horizontal interaction
     return (
       y >= this.y - 10 &&
       y <= this.y + 10 &&

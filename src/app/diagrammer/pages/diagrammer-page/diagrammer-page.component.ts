@@ -22,6 +22,7 @@ import {
   LeftArrow,
   RightArrowSync,
   RightArrowRecursive,
+  Arrow,
 } from './classes/diagram-element';
 import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
 @Component({
@@ -111,6 +112,8 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
 
   private resizingLifeline: Lifeline | null = null;
 
+  private resizingEnd: 'start' | 'end' | null = null; // Add this line
+
   private render(): void {
     this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
     this.cx.textAlign = 'center';
@@ -187,7 +190,6 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    // Resetea el estado
     this.resetInteractionState();
 
     // Primero, verifica si se hizo clic en algún controlador de redimensionamiento de línea de vida
@@ -198,6 +200,19 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
       // Luego, verifica otros tipos de interacciones como mover o redimensionar
       this.checkForOtherInteractions(mouseX, mouseY, event);
     }
+
+    this.diagramElements.forEach((element) => {
+      if (element instanceof Arrow) {
+        const nearEnd = element.isNearEnds(mouseX, mouseY);
+        if (nearEnd) {
+          this.selectedElement = element;
+          this.isResizing = true;
+          this.resizingEnd = nearEnd; // 'start' o 'end'
+          event.preventDefault();
+          return;
+        }
+      }
+    });
   }
 
   @HostListener('mousemove', ['$event'])
@@ -206,12 +221,23 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    if (this.isDragging && this.selectedElement) {
-      this.performDragging(mouseX, mouseY);
-    } else if (this.isResizing && this.selectedElement) {
-      this.performResizing(mouseX, mouseY);
-    } else if (this.resizingLifeline) {
-      this.performLifelineResizing(mouseY);
+    if (this.isResizing && this.selectedElement instanceof Arrow) {
+      if (this.resizingEnd === 'end') {
+        this.selectedElement.endX = mouseX; // Actualiza directamente el extremo 'endX'
+        this.render();
+      } else if (this.resizingEnd === 'start') {
+        const dx = mouseX - this.selectedElement.x;
+        this.selectedElement.move(dx, 0); // Mueve la flecha entera si se arrastra el inicio
+        this.render();
+      }
+    } else {
+      if (this.isDragging && this.selectedElement) {
+        this.performDragging(mouseX, mouseY);
+      } else if (this.isResizing && this.selectedElement) {
+        this.performResizing(mouseX, mouseY);
+      } else if (this.resizingLifeline) {
+        this.performLifelineResizing(mouseY);
+      }
     }
   }
 
@@ -226,6 +252,7 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
     this.resizingEdges = null;
     this.selectedElement = null;
     this.resizingLifeline = null;
+    this.resizingEnd = null; // Reset resizing end
   }
 
   private checkForLifelineResizeControl(mouseX: number, mouseY: number): void {
