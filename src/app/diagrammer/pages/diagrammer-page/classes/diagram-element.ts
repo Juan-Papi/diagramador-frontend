@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 export class DiagramElement {
   x: number;
   y: number;

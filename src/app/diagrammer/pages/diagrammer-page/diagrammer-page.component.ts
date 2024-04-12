@@ -362,118 +362,108 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   }
 
   saveDiagramState(): string {
-    const diagramState = this.diagramElements.map((element) => {
-      const baseState = {
-        type: element.constructor.name,
+    const state = this.diagramElements.map((element) => {
+      const baseData = {
+        type: element.constructor.name, // Guarda el nombre de la clase para usar en la carga
         x: element.x,
         y: element.y,
+        isSelected: element.isSelected,
         text: element.text,
       };
 
       if (element instanceof Actor || element instanceof ClassElement) {
-        return {
-          ...baseState,
+        Object.assign(baseData, {
           width: element.width,
           height: element.height,
-          lifelineLength: element.lifeline.length,
-        };
-      } else if (element instanceof Message) {
-        return { ...baseState, width: element.width };
-      } else if (element instanceof Loop || element instanceof Alt) {
-        return { ...baseState, width: element.width, height: element.height };
-      } else if (
-        element instanceof RightArrow ||
-        element instanceof LeftArrow
-      ) {
-        return { ...baseState, endX: element.endX, dashed: element.dashed };
+          lifeline: {
+            x: element.lifeline.x,
+            y: element.lifeline.y,
+            length: element.lifeline.length,
+          },
+        });
       }
 
-      return baseState;
+      if (element instanceof Arrow) {
+        Object.assign(baseData, {
+          endX: element.endX,
+          dashed: element.dashed,
+        });
+      }
+
+      if (element instanceof Loop || element instanceof Alt) {
+        Object.assign(baseData, {
+          width: element.width,
+          height: element.height,
+          // elements: element.elements.map(el => ({...})) // Aquí debes decidir cómo manejar elementos anidados
+        });
+      }
+
+      return baseData;
     });
 
-    return JSON.stringify(diagramState);
+    return JSON.stringify(state);
   }
 
   loadDiagramState(diagramJSON: string): void {
-    const diagramState = JSON.parse(diagramJSON);
-    this.diagramElements = diagramState.map((elementState: any) => {
-      let element;
-      switch (elementState.type) {
+    const elements = JSON.parse(diagramJSON);
+    this.diagramElements = elements.map((el: any) => {
+      let element: DiagramElement;
+      switch (el.type) {
         case 'Actor':
-          element = new Actor(
-            elementState.x,
-            elementState.y,
-            elementState.text
+          const actor = new Actor(el.x, el.y, el.text);
+          actor.width = el.width;
+          actor.height = el.height;
+          actor.lifeline = new Lifeline(
+            el.lifeline.x,
+            el.lifeline.y,
+            el.lifeline.length
           );
-          element.width = elementState.width;
-          element.height = elementState.height;
-          element.lifeline = new Lifeline(
-            elementState.x + elementState.width / 2,
-            elementState.y + 100 + 15,
-            elementState.lifelineLength
-          );
+          element = actor;
           break;
         case 'ClassElement':
-          element = new ClassElement(
-            elementState.x,
-            elementState.y,
-            elementState.width,
-            elementState.height,
-            elementState.text
+          const classElement = new ClassElement(
+            el.x,
+            el.y,
+            el.width,
+            el.height,
+            el.text
           );
-          element.lifeline = new Lifeline(
-            elementState.x + elementState.width / 2,
-            elementState.y + elementState.height,
-            elementState.lifelineLength
+          classElement.lifeline = new Lifeline(
+            el.lifeline.x,
+            el.lifeline.y,
+            el.lifeline.length
           );
+          element = classElement;
           break;
         case 'Message':
-          element = new Message(
-            elementState.x,
-            elementState.y,
-            elementState.width,
-            elementState.text
-          );
+          element = new Message(el.x, el.y, el.width, el.text);
           break;
         case 'Loop':
+          const loop = new Loop(el.x, el.y, el.width, el.height);
+          // Supongamos que elementos dentro de Loop se manejan de alguna manera aquí.
+          element = loop;
+          break;
         case 'Alt':
-          element =
-            elementState.type === 'Loop'
-              ? new Loop(
-                  elementState.x,
-                  elementState.y,
-                  elementState.width,
-                  elementState.height
-                )
-              : new Alt(
-                  elementState.x,
-                  elementState.y,
-                  elementState.width,
-                  elementState.height
-                );
+          const alt = new Alt(el.x, el.y, el.width, el.height);
+          // Supongamos que elementos dentro de Alt se manejan de alguna manera aquí.
+          element = alt;
           break;
         case 'RightArrow':
+          element = new RightArrow(el.x, el.y, el.endX);
+          break;
         case 'LeftArrow':
-          element =
-            elementState.type === 'RightArrow'
-              ? new RightArrow(
-                  elementState.x,
-                  elementState.y,
-                  elementState.endX,
-                  elementState.text
-                )
-              : new LeftArrow(
-                  elementState.x,
-                  elementState.y,
-                  elementState.endX,
-                  elementState.text
-                );
-          element.dashed = elementState.dashed;
+          element = new LeftArrow(el.x, el.y, el.endX);
+          break;
+        case 'RightArrowSync':
+          element = new RightArrowSync(el.x, el.y, el.endX);
+          break;
+        case 'RightArrowRecursive':
+          element = new RightArrowRecursive(el.x, el.y, el.endX);
           break;
         default:
-          throw new Error(`Unrecognized element type: ${elementState.type}`);
+          throw new Error(`Unsupported diagram element type: ${el.type}`);
       }
-
+      element.isSelected = el.isSelected;
       return element;
     });
 
