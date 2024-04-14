@@ -139,5 +139,13 @@
     >
       <img [src]="iconGrid" (click)="removeGridToggle()" alt="icon-grid" />
     </div>
+
+    <div>
+      <h1>Websocket - Client</h1>
+      <span id="server-status">{{ serverStatus }}</span>
+      <ul id="clients-ul">
+        <li *ngFor="let client of clientList">{{ client }}</li>
+      </ul>
+    </div>
   </div>
 </div>

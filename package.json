@@ -24,6 +24,7 @@
     "ngx-pagination": "^6.0.3",
     "ngx-toastr": "^18.0.0",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.7.5",
     "sweetalert2": "^11.10.6",
     "swiper": "^11.0.7",
     "tslib": "^2.3.0",

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   HostListener,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -9,7 +10,6 @@ import {
 import { Icons } from 'src/app/shared/interfaces/icons.enum';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { DiagrammerService } from '../../services/diagrammer.service';
-import { Diagram } from 'src/app/shared/interfaces/diagram.interface';
 import {
   Actor,
   ClassElement,
@@ -25,12 +25,16 @@ import {
   Arrow,
 } from './classes/diagram-element';
 import { DiagramsResponse } from 'src/app/home/interfaces/diagrams-response.interface';
+import { SocketService } from './socket-client';
+import { EMPTY, Subscription } from 'rxjs';
 @Component({
   selector: 'app-diagrammer-page',
   templateUrl: './diagrammer-page.component.html',
   styleUrls: ['./diagrammer-page.component.css'],
 })
-export class DiagrammerPageComponent implements OnInit, AfterViewInit {
+export class DiagrammerPageComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   removeGrid: boolean = false;
   iconGrid: string = './assets/images/ic_no_grid.png';
 
@@ -38,14 +42,49 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
   title: string = '¡Guardado!';
   description: string = 'Los cambios se han guardado correctamente';
   currentDiagram?: DiagramsResponse;
+  private eventsSubscription: Subscription = EMPTY.subscribe();
+  private clientsSubscription: Subscription = new Subscription();
+  clientList: string[] = []; // Almacenar los clientes
+  serverStatus: string = 'disconnected';
+  private connectionSub: Subscription = EMPTY.subscribe();
 
   constructor(
     private modalService: ModalService,
-    private diagrammerService: DiagrammerService
+    private diagrammerService: DiagrammerService,
+    private socketService: SocketService
   ) {}
 
   ngOnInit(): void {
     this.currentDiagram = this.diagrammerService.getCurrentDiagram();
+    // Subscribe to 'updateDiagram' events from the server
+    this.eventsSubscription = this.socketService
+      .getMessage('updateDiagram')
+      .subscribe({
+        next: (data: any) => {
+          this.loadDiagramState(data);
+        },
+        error: (error) => {
+          console.error('Failed to receive updates:', error);
+        },
+      });
+
+    this.connectionSub = this.socketService.onConnectionChange.subscribe(
+      (status) => {
+        this.serverStatus = status;
+      }
+    );
+
+    this.clientsSubscription = this.socketService.onClientsUpdated.subscribe(
+      (clients) => {
+        this.clientList = clients; // Actualizar la lista de clientes
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.eventsSubscription.unsubscribe();
+    this.clientsSubscription.unsubscribe();
+    this.socketService.closeConnection();
   }
 
   ngAfterViewInit(): void {
@@ -400,6 +439,9 @@ export class DiagrammerPageComponent implements OnInit, AfterViewInit {
 
       return baseData;
     });
+
+    // Emitir el estado actualizado a otros usuarios
+    this.socketService.sendMessage('updateDiagram', state);
 
     return JSON.stringify(state);
   }
