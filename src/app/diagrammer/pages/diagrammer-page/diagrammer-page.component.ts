@@ -47,6 +47,7 @@ export class DiagrammerPageComponent
   clientList: string[] = []; // Almacenar los clientes
   serverStatus: string = 'disconnected';
   private connectionSub: Subscription = EMPTY.subscribe();
+  private updateSubscription: Subscription = EMPTY.subscribe();
 
   constructor(
     private modalService: ModalService,
@@ -57,16 +58,16 @@ export class DiagrammerPageComponent
   ngOnInit(): void {
     this.currentDiagram = this.diagrammerService.getCurrentDiagram();
     // Subscribe to 'updateDiagram' events from the server
-    this.eventsSubscription = this.socketService
-      .getMessage('updateDiagram')
-      .subscribe({
-        next: (data: any) => {
-          this.loadDiagramState(data);
-        },
-        error: (error) => {
-          console.error('Failed to receive updates:', error);
-        },
-      });
+    // this.eventsSubscription = this.socketService
+    //   .getMessage('updateDiagram', this.currentDiagram?.id!)
+    //   .subscribe({
+    //     next: (data: any) => {
+    //       this.loadDiagramState(data);
+    //     },
+    //     error: (error) => {
+    //       console.error('Failed to receive updates:', error);
+    //     },
+    //   });
 
     this.connectionSub = this.socketService.onConnectionChange.subscribe(
       (status) => {
@@ -79,6 +80,20 @@ export class DiagrammerPageComponent
         this.clientList = clients; // Actualizar la lista de clientes
       }
     );
+
+    this.updateSubscription = this.socketService.onDiagramUpdate().subscribe({
+      next: (data) => {
+        console.log('Diagram update received', data);
+        this.loadDiagramState(data.content);
+      },
+      error: (error) =>
+        console.error('Failed to receive diagram updates:', error),
+    });
+  }
+
+  sendUpdate(content: any): void {
+    const data = { diagramId: this.currentDiagram?.id!, content: content };
+    this.socketService.updateDiagram(data);
   }
 
   ngOnDestroy(): void {
@@ -252,6 +267,8 @@ export class DiagrammerPageComponent
         }
       }
     });
+
+    this.saveDiagramState();
   }
 
   @HostListener('mousemove', ['$event'])
@@ -278,11 +295,14 @@ export class DiagrammerPageComponent
         this.performLifelineResizing(mouseY);
       }
     }
+
+    this.saveDiagramState();
   }
 
   @HostListener('mouseup')
   onMouseUp(): void {
     this.resetInteractionState();
+    this.saveDiagramState();
   }
 
   private resetInteractionState(): void {
@@ -441,8 +461,13 @@ export class DiagrammerPageComponent
     });
 
     // Emitir el estado actualizado a otros usuarios
-    this.socketService.sendMessage('updateDiagram', state);
+    // this.socketService.sendMessage(
+    //   'saveDiagram',
+    //   JSON.stringify(state),
+    //   this.currentDiagram?.id!
+    // );
 
+    this.sendUpdate(JSON.stringify(state));
     return JSON.stringify(state);
   }
 

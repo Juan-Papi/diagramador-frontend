@@ -12,7 +12,7 @@ export class SocketService {
 
   constructor() {
     const token = localStorage.getItem('token');
-    console.log({token});
+    console.log({ token });
     const manager = new Manager('http://localhost:3000', {
       path: '/socket.io/',
       extraHeaders: {
@@ -36,11 +36,15 @@ export class SocketService {
     });
   }
 
-  public sendMessage(event: string, data: any): void {
-    this.socket.emit(event, data);
+  public sendMessage(event: string, data: any, diagramId: number): void {
+    console.log({ data });
+    this.socket.emit(event, { data, diagramId });
+    // this.socket.on(event, )
   }
 
-  public getMessage(event: string): Observable<any> {
+  public getMessage(event: string, diagramId: number): Observable<any> {
+    this.socket.emit(event, diagramId);
+
     return new Observable((observer) => {
       this.socket.on(event, (data) => {
         observer.next(data);
@@ -66,6 +70,19 @@ export class SocketService {
 
     this.socket.on('clients-updated', (clients: string[]) => {
       this.onClientsUpdated.emit(clients); // Emitir la lista de clientes directamente
+    });
+  }
+
+  updateDiagram(data: { diagramId: number; content: any }): void {
+    this.socket.emit('updateDiagram', data);
+  }
+
+  onDiagramUpdate(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on('diagramUpdated', (data) => {
+        observer.next(data);
+      });
+      return () => this.socket.off('diagramUpdated');
     });
   }
 }
