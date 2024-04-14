@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { io, Manager, Socket } from 'socket.io-client';
+import { Manager, Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +11,15 @@ export class SocketService {
   public onClientsUpdated: EventEmitter<string[]> = new EventEmitter();
 
   constructor() {
+    const token = localStorage.getItem('token');
+    console.log({token});
     const manager = new Manager('http://localhost:3000', {
       path: '/socket.io/',
+      extraHeaders: {
+        token: `${token}`, // Assuming the backend expects a bearer token
+      },
     });
+
     this.socket = manager.socket('/');
     this.listenForEvents();
     this.addListeners();
