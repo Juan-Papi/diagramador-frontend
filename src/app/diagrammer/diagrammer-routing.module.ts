@@ -7,6 +7,10 @@ const routes: Routes = [
     path: '',
     // component: DiagrammerLayoutComponent,
     children: [
+      // { 
+      //   path: ':shareToken', 
+      //   component: DiagrammerPageComponent,
+      // },
       { 
         path: '', 
         component: DiagrammerPageComponent,

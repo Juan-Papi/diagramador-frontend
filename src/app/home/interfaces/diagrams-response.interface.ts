@@ -3,14 +3,19 @@
 import { User } from "src/app/auth/interfaces/user.interface";
 
 export interface DiagramsResponse {
-  id:          number;
-  name:        string;
-  description: string;
-  data:        null | string;
-  createdAt:   string;
-  updatedAt:   null;
-  user:        User;
-  coWorkers?:   any[];
+  id:            number;
+  name:          string;
+  description:   string;
+  data:          string;
+  createdAt:     string;
+  updatedAt:     string;
+  collaborators?: Collaborator[];
+  user:          User;
+}
+
+export interface Collaborator {
+  id:   number;
+  user: User;
 }
 
 

@@ -19,6 +19,10 @@ export class HomeAuthenticatedPageComponent {
     return this.homeService.proyectsList;
   }
   
+  get collaborations(): DiagramsResponse[] {
+    return this.homeService.collaborationsList;
+  }
+  
   openModal() {
     this.modalService.openModalCreate();
   }

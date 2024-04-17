@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HomeService } from '../../services/home.service';
 import Swal from 'sweetalert2';
-import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
+import { Collaborator, DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
@@ -155,6 +155,11 @@ export class DiagramsPageComponent {
     const partes = dateString.split('-');
     const nuevaFecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
     return nuevaFecha;
+  }
+  
+  getCollaboratorNames(collaborators: Collaborator[] | undefined): string {
+    if (collaborators === undefined) return '';
+    return collaborators.map(collaborator => `${collaborator.user.name} ${collaborator.user.lastName}`).join(', ');
   }
   
   

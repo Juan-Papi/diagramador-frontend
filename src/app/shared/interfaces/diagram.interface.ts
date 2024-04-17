@@ -8,7 +8,7 @@ export interface Diagram {
   description: string;
   data:        string;
   user:        User;
-  updatedAt:   null;
+  updatedAt:   string;
   createdAt:   string;
 }
 

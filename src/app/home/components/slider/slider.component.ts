@@ -1,11 +1,10 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 
-import { register, SwiperContainer } from 'swiper/element/bundle';
-import { SwiperOptions } from 'swiper/types';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
 import { Router } from '@angular/router';
-register();
+
 
 @Component({
   selector: 'app-slider',
@@ -13,7 +12,6 @@ register();
   styleUrls: ['./slider.component.css'],
 })
 export class SliderComponent implements AfterViewInit {
-  swiper?: SwiperContainer | null;
   @Input() cards: DiagramsResponse[] = [];
   
   constructor(
@@ -24,41 +22,43 @@ export class SliderComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // swiper element
-    const swiperEl = document.querySelector('swiper-container');
-
-    // swiper parameters
-    const swiperParams: SwiperOptions = {
-      slidesPerView: 1,
-      // spaceBetween: 10,
-      pagination: {
-        enabled: true,
-        // el: '.swiper-pagination',
-        clickable: true,
-        type: 'bullets',
-      },
-      navigation: {
-        enabled: true,
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        640: {
-          slidesPerView: 2,
-        },
-        1024: {
-          slidesPerView: 5,
-        },
-      },
-    };
-
-    Object.assign(swiperEl!, swiperParams);
-    this.swiper = swiperEl;
-    this.swiper?.initialize();
   }
+  
+  customOptions: OwlOptions = {
+    loop: false,
+    items: 5,
+    margin: 18,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    dotsEach: true,
+    autoWidth: true,
+    nav: true,
+    navSpeed: 500,
+    navText: [
+      '<i class="fas fa-chevron-left"></i>',
+      '<i class="fas fa-chevron-right"></i>',
+    ],
+    responsive: {
+      0: {
+        items: 1,
+      },
+      400: {
+        items: 2,
+      },
+      740: {
+        items: 3,
+      },
+      1024: {
+        items: 5,
+      },
+    },
+  };
   
   goToDiagram(diagram: DiagramsResponse) {
     this.diagrammerService.setCurrentDiagram(diagram);
     this.router.navigate(['/diagrammer']);
   }
+  
 }

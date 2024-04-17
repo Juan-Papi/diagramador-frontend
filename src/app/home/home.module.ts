@@ -9,11 +9,13 @@ import { HomeAuthenticatedPageComponent } from './pages/home-authenticated-page/
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarAuthenticatedComponent } from './components/navbar-authenticated/navbar-authenticated.component';
+import { SliderProjectsComponent } from './components/slider-projects/slider-projects.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { DiagramsPageComponent } from './pages/diagrams-page/diagrams-page.component';
 import { SharedModule } from '../shared/shared.module';
 import { ConfigPageComponent } from './pages/config-page/config-page.component';
-import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     NavbarComponent,
     FooterComponent,
     NavbarAuthenticatedComponent,
+    SliderProjectsComponent,
     SliderComponent,
     DiagramsPageComponent,
     ConfigPageComponent,
@@ -33,6 +36,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     SharedModule,
     ReactiveFormsModule,
     NgxPaginationModule,
+    CarouselModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

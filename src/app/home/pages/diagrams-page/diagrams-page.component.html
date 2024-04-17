@@ -74,7 +74,7 @@
               <td class="align-middle">
                 {{ diagram.createdAt | date : "longDate" : "" : "es-BO" }}
               </td>
-              <td class="align-middle">{{ diagram.coWorkers }}</td>
+              <td class="align-middle">{{ getCollaboratorNames(diagram.collaborators) }}</td>
               <td class="align-middle text-center text-nowrap" >
                 <button 
                   (click)="openModalEdit(diagram)"

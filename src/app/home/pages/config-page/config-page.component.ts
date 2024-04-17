@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserCurrent } from 'src/app/auth/interfaces/user.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { ValidatorsService } from 'src/app/shared/services/validators.service';
-import { CustomValidators } from 'src/app/shared/Validators/custom.validator';
+import { HomeService } from '../../services/home.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-config-page',
@@ -12,27 +13,27 @@ import { CustomValidators } from 'src/app/shared/Validators/custom.validator';
 })
 export class ConfigPageComponent implements OnInit {
   // @ViewChild('fileName') fileName!: ElementRef;
-  image: string | null = './assets/images/user.png';
+  imagePreview!: string;
+  photo?: File;
+  loading!: boolean;
+  
   configForm!: FormGroup;
 
   constructor(
     private authService: AuthService,
+    private homeService: HomeService,
     private fb: FormBuilder,
     private validatorsService: ValidatorsService
   ) {}
 
   ngOnInit(): void {
+    this.loading = false;
+    this.imagePreview = this.user?.profile.photo || './assets/images/user.png';
     const gender = this.user?.profile.gender;
+    
     this.configForm = this.fb.group({
-      photo: [
-        '',
-        [
-          Validators.required,
-          // CustomValidators.fileExtension,
-          // CustomValidators.fileSize(5242880),
-        ],
-      ],
-      gender: [gender, []],
+      file: [null, [Validators.required]],
+      gender: [gender],
     });
   }
 
@@ -42,25 +43,58 @@ export class ConfigPageComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file: File = event.target.files[0];
-
+    
     if (file) {
+      this.photo = file;
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        this.image = reader.result as string;
+        this.imagePreview = reader.result as string;
       };
-      // this.fileName.nativeElement.textContent = file.name;
     }
   }
 
-  onSubmit() {
-    console.log(this.configForm.value);
+  onSubmit(): void {
     if (this.configForm.invalid) {
       this.configForm.markAllAsTouched();
       return;
     }
+    
+    const id = this.user?.profile.id;
+    const {gender} = this.configForm.value;
+    if (!id && !this.photo) return;
+    
+    this.loading = true; // Habilitar estado de carga
+    
+    this.homeService.uploadProfile(id!, this.photo!, gender).subscribe({
+      next: (resp) => {
+        
+        Swal.fire({
+          title: '¡Actualizado!',
+          text: 'Perfil actualizado correctamente.',
+          icon: 'success',
+          timer: 1500,
+        });
+        
+        this.loading = false; 
+        this.authService.getUser().subscribe({
+          next: (user) => {
+            this.imagePreview = user.profile.photo;
+          }
+        });
+      },
+      error: (err) => {
+        // console.log(err);
+        Swal.fire({
+          title: '¡Error!',
+          text: 'Error al actualizar el perfil.',
+          icon: 'error',
+          timer: 1500,
+        });
+        this.loading = false;
+      }
+    });
 
-    console.log(this.configForm.value);
   }
 
   isValidField(field: string): boolean | null {

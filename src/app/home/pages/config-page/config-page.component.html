@@ -10,16 +10,16 @@
       <div class="container-config mt-4">
         <div class="container-image">
           <figure class="image-container">
-            <img [src]="image" id="chosen-image" />
+            <img [src]="imagePreview" id="chosen-image" />
             <!-- <figcaption #fileName id="file-name"></figcaption> -->
           </figure>
-          <span *ngIf="isValidField('photo')" class="form-text text-danger">
-            {{ getMessageError("photo") }}
+          <span *ngIf="isValidField('file')" class="form-text text-danger">
+            {{ getMessageError("file") }}
           </span>
 
           <input
             (change)="onFileChange($event)"
-            formControlName="photo"
+            formControlName="file"
             type="file"
             id="upload-button"
             accept="image/*"
@@ -102,7 +102,10 @@
               <label class="form-check-label"> No especificado </label>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          
+          <button type="submit" [disabled]="loading" class="btn btn-primary">
+            {{ loading ? 'Procesando...' : 'Guardar Cambios' }}
+          </button>
         </div>
       </div>
     </form>

@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { DiagramsResponse } from '../interfaces/diagrams-response.interface';
 import { catchError, map, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { DiagramUpdateParams } from 'src/app/shared/interfaces/diagram.interface';
+import { Profile } from 'src/app/auth/interfaces/register-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +12,17 @@ import { DiagramUpdateParams } from 'src/app/shared/interfaces/diagram.interface
 export class HomeService {
   private readonly baseUrl: string = environment.baseUrl;
   private projects?: DiagramsResponse[];
+  private collaborations?: DiagramsResponse[];
   
   private projectsSubject = new Subject<DiagramsResponse[]>();
   projects$ = this.projectsSubject.asObservable();
   
   get proyectsList(): DiagramsResponse[] {
     return this.projects || [];
+  }
+  
+  get collaborationsList(): DiagramsResponse[] {
+    return this.collaborations || [];
   }
 
   setProyects(projects: DiagramsResponse[]) {
@@ -39,64 +45,38 @@ export class HomeService {
       })
     );
   }
-
-  // Obtener los proyectos con paginación
-  // getAllProjectsPagination(
-  //   page: number,
-  //   limit: number,
-  //   date?: string,
-  //   search?: string
-  // ): Observable<DiagramsResponse[]> {
-  //   let params = new HttpParams()
-  //     .set('offset', (page + 1).toString())
-  //     .set('limit', limit.toString());
-
-  //   const url = `${this.baseUrl}/drawing`;
-  //   const token = localStorage.getItem('token');
-  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-  //   if (date) {
-  //     params = params.set('date', date);
-  //   }
-
-  //   if (search) {
-  //     params = params.set('search', search);
-  //   }
-
-  //   return this.http.get<DiagramsResponse[]>(url, { headers, params }).pipe(
-  //     tap((diagrams) => (this.projects = diagrams)),
-  //     catchError((err) => {
-  //       return throwError(() => err);
-  //     })
-  //   );
-  // }
   
+  // Obtener los proyectos colaborativos
+  getCollaborations(): Observable<DiagramsResponse[]> {
+    const url = `${this.baseUrl}/diagram/collaborations`;
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<DiagramsResponse[]>(url, { headers }).pipe(
+      tap((diagrams) => (this.collaborations = diagrams)),
+      catchError((err) => {
+        return throwError(() => err);
+      })
+    );
+  }
   
-  // Filtrar proyectos por fecha y nombre
-  // filterProjects(date?: string, search?: string): Observable<any> {
-  //   const url = `${this.baseUrl}/diagram`;
-  //   const token = localStorage.getItem('token');
-  //   let headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  //   headers = new HttpHeaders().set('Content-Type', 'application/json');
+  // Actualizar el perfil del usuario
+  uploadProfile(id: number, file: File, gender: string): Observable<Profile> {
+    const url = `${this.baseUrl}/profile/upload-profile-image/${id}`;
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = new FormData();
     
-  //   let body: any = {};
+    body.append('file', file);
+    body.append('gender', gender);
 
-  //   if (date) {
-  //     body['date'] = date;
-  //   }
-
-  //   if (search) {
-  //     body['search'] = search;
-  //   }
-
-  //   return this.http.get(url, { headers, observe: body }).pipe(
-  //     // tap((diagrams) => (this.projects = diagrams)),
-  //     tap((resp) => console.log(resp)),
-  //     catchError((err) => {
-  //       return throwError(() => err);
-  //     })
-  //   );
-  // }
+    return this.http.patch<Profile>(url, body, { headers })
+    .pipe(
+      catchError((err) => {
+        return throwError(() => err.error.message);
+      })
+    );
+  }
   
   // Actualizar un proyecto
   updateDiagram(params: DiagramUpdateParams): Observable<boolean> {
@@ -133,4 +113,7 @@ export class HomeService {
       })
     );
   }
+  
+  
+  
 }

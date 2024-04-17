@@ -10,8 +10,6 @@ import { HomeService } from '../../services/home.service';
 })
 export class NavbarAuthenticatedComponent implements OnInit {
 
-  currentUser?: UserCurrent;
-  
   constructor(
     private authService: AuthService,
     private homeService: HomeService,
@@ -21,12 +19,21 @@ export class NavbarAuthenticatedComponent implements OnInit {
   ngOnInit(): void {
     this.getCurrentUser();
     this.getAllProyects();
+    this.getAllCollaborations();
+  }
+  
+  get currentUser(): UserCurrent | undefined {
+    return this.authService.currentUser
+  }
+  
+  get photo(): string  {
+    return this.authService.currentUser?.profile.photo || './assets/images/user.png';
   }
   
   getCurrentUser(): void {
     this.authService.getUser().subscribe({
       next: (user) => {
-        this.currentUser = user;
+        // console.log('user', user);
       },
       error: (error) => {
         console.log({error});
@@ -43,6 +50,17 @@ export class NavbarAuthenticatedComponent implements OnInit {
         console.log({errorMessage});
       }
     });
+  }
+  
+  getAllCollaborations(): void {
+    this.homeService.getCollaborations().subscribe({
+      next: (resp) => {
+        // console.log('Colaborationes:', resp);
+      },
+      error: (errorMessage) => {
+        console.log({errorMessage});
+      }
+    })
   }
   
   logout(): void {
