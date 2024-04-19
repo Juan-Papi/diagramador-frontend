@@ -18,6 +18,11 @@
                 {{ card.description }}
               </p>
             </div>
+            <div *ngIf="showCreator" class="card-text">
+              <p>
+                <b>Creador:</b> {{ card.user.name }} {{ card.user.lastName }}
+              </p>
+            </div>
             <div class="card-link">
               <p>
                 Fecha: {{ card.createdAt | date : "longDate" : "" : "es-BO" }}

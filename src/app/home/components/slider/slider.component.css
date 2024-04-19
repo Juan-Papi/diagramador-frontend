@@ -38,6 +38,7 @@
 .card-link {
   /* text-align: center; */
   color: var(--secondary-color);
+  margin: 0;
 }
 .card-link p {
   margin: 0px;

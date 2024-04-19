@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class SliderComponent implements AfterViewInit {
   @Input() cards: DiagramsResponse[] = [];
+  @Input() showCreator: boolean = false;
   
   constructor(
     private diagrammerService: DiagrammerService,
