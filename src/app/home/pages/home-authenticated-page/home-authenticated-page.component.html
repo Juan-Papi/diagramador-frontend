@@ -1,7 +1,13 @@
-
 <div class="mx-60 mb-5">
-  <button (click)="openModal()" class="custom-btn shadow-button d-flex align-items-center ms-auto">
-    <img class="me-2" src="./assets/images/icon_round-plus.png" alt="icon-plus">
+  <button
+    (click)="openModal()"
+    class="custom-btn shadow-button d-flex align-items-center ms-auto"
+  >
+    <img
+      class="me-2"
+      src="./assets/images/icon_round-plus.png"
+      alt="icon-plus"
+    />
     Nuevo Diagrama
   </button>
   <app-custom-modal></app-custom-modal>
@@ -9,7 +15,10 @@
 
 <div class="d-flex flex-row align-items-center mx-60 mb-4">
   <h2 class="txt-title">Ultimos Diagramas</h2>
-  <a routerLink="/home/diagrams" class="custom-btn btn-sm shadow-button ms-auto">
+  <a
+    routerLink="/home/diagrams"
+    class="custom-btn btn-sm shadow-button ms-auto"
+  >
     Ver Todo
   </a>
 </div>
@@ -17,10 +26,37 @@
 <!-- <app-slider-projects [cards]="proyects"></app-slider-projects> -->
 <app-slider [cards]="proyects"></app-slider>
 
-<div class="mx-60 mb-4">
+<div class="d-flex flex-row align-items-center mx-60 mb-3">
   <h2 class="txt-title">Colaboraciones</h2>
+  <button
+    (click)="showInputToken()"
+    [ngClass]="{ 'custom-btn-cancel': !hideToken }"
+    class="custom-btn btn-sm shadow-button ms-auto"
+  >
+    {{ hideToken ? "Unirme a un proyecto" : "Cancelar" }}
+  </button>
 </div>
-
+<div
+  *ngIf="!hideToken"
+  class="d-flex align-items-center justify-content-end mx-60 mb-4"
+>
+  <form [formGroup]="tokenForm" (ngSubmit)="onSubmit()" class="form-token">
+    <div class="form-gropup">
+      <input
+        formControlName="token"
+        class="form-control shadow-button"
+        type="text"
+        placeholder="Ingrese un token válido"
+      />
+      <span *ngIf="isValidField('token')" class="form-text text-danger">
+        {{ getMessageError("token") }}
+      </span>
+    </div>
+    <button type="submit" class="custom-btn-secondary shadow-button ms-2">
+      Unirme
+    </button>
+  </form>
+</div>
 
 <app-slider [cards]="collaborations"></app-slider>
 
@@ -95,4 +131,3 @@
     <button class="custom-btn-secondary">Cargar Más</button>
   </div>
 </div> -->
-

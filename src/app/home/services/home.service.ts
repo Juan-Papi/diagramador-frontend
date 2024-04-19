@@ -60,6 +60,20 @@ export class HomeService {
     );
   }
   
+  // Valida el token para agregarse a un proyecto como colaborador
+  validateToken(id: string): Observable<any> {
+    const url = `${this.baseUrl}/diagram/validateToken/${id}`;
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get(url, { headers }).pipe(
+      // tap((res) => console.log(res)),
+      catchError((err) => {
+        return throwError(() => err.error.message);
+      })
+    );
+  }
+  
   // Actualizar el perfil del usuario
   uploadProfile(id: number, file: File, gender: string): Observable<Profile> {
     const url = `${this.baseUrl}/profile/upload-profile-image/${id}`;

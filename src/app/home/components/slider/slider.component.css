@@ -2,6 +2,7 @@
 
 .slider-container {
   margin: 50px 80px;
+  z-index: 0;
 }
 
 .card {
