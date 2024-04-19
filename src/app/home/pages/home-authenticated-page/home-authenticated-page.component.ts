@@ -5,6 +5,8 @@ import { DiagramsResponse } from '../../interfaces/diagrams-response.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidatorsService } from 'src/app/shared/services/validators.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { DiagrammerService } from 'src/app/diagrammer/services/diagrammer.service';
 
 @Component({
   selector: 'app-home-authenticated-page',
@@ -19,8 +21,10 @@ export class HomeAuthenticatedPageComponent implements OnInit {
   constructor(
     private modalService: ModalService,
     private homeService: HomeService, 
+    private diagrammerService: DiagrammerService,
     private fb: FormBuilder, 
     private validatorsService: ValidatorsService,
+    private router: Router,
   ) {}
   
   ngOnInit(): void {
@@ -47,9 +51,11 @@ export class HomeAuthenticatedPageComponent implements OnInit {
     if (!token) return;
     
     this.homeService.validateToken(token).subscribe({
-      next: (resp) => {
+      next: (diagram) => {
         this.hideToken = true;
         this.tokenForm.reset();
+        
+        this.diagrammerService.setCurrentDiagram(diagram);
         
         Swal.fire({
           title: '¡Agregado exitosamente!',
@@ -58,6 +64,7 @@ export class HomeAuthenticatedPageComponent implements OnInit {
           timer: 1500,
         });
         
+        this.router.navigateByUrl('/diagrammer');
         this.homeService.getCollaborations().subscribe();
       },
       error: (errorMessage) => {

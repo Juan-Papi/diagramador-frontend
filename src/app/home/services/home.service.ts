@@ -5,6 +5,7 @@ import { DiagramsResponse } from '../interfaces/diagrams-response.interface';
 import { catchError, map, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { DiagramUpdateParams } from 'src/app/shared/interfaces/diagram.interface';
 import { Profile } from 'src/app/auth/interfaces/register-response.interface';
+import { AddCollaboratorResponse } from '../interfaces/add-collaborator.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -61,13 +62,17 @@ export class HomeService {
   }
   
   // Valida el token para agregarse a un proyecto como colaborador
-  validateToken(id: string): Observable<any> {
+  validateToken(id: string): Observable<DiagramsResponse> {
     const url = `${this.baseUrl}/diagram/validateToken/${id}`;
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get(url, { headers }).pipe(
+    return this.http.get<AddCollaboratorResponse>(url, { headers }).pipe(
       // tap((res) => console.log(res)),
+      map((resp) => {
+        const diagram = resp.diagram;
+        return diagram;
+      }),
       catchError((err) => {
         return throwError(() => err.error.message);
       })
