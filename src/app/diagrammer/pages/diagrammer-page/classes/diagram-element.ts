@@ -427,7 +427,7 @@ export abstract class Arrow extends DiagramElement {
     x: number,
     y: number,
     endX: number,
-    text: string = 'Mensaje',
+    text: string,
     dashed: boolean = false
   ) {
     super(x, y);
@@ -492,6 +492,14 @@ export abstract class Arrow extends DiagramElement {
 }
 
 export class RightArrow extends Arrow {
+  constructor(
+    x: number,
+    y: number,
+    endX: number,
+    text: string
+  ) {
+    super(x, y, endX, text);
+  }
   override drawArrowHead(ctx: CanvasRenderingContext2D): void {
     // Dibuja cabeza de flecha hacia la derecha
     const headLength = 10; // Longitud de la punta de la flecha
@@ -511,7 +519,7 @@ export class RightArrow extends Arrow {
 }
 
 export class LeftArrow extends Arrow {
-  constructor(x: number, y: number, endX: number, text: string = 'Respuesta') {
+  constructor(x: number, y: number, endX: number, text: string) {
     super(x, y, endX, text, true); // true para hacerla punteada
   }
 

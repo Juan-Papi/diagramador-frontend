@@ -213,27 +213,25 @@ export class DiagrammerPageComponent
   }
 
   public addRightArrow(): void {
-    const arrow = new RightArrow(100, 200, 250); // Posición y longitud ejemplo
-    //const arrow = new RightArrowSync(100, 200, 250); // Posición y longitud ejemplo
-    // const arrow = new RightArrowRecursive(100, 200, 250); // Posición y longitud ejemplo
+    const arrow = new RightArrow(100, 200, 250, 'Right Arrow'); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
 
   public addLeftArrow(): void {
-    const arrow = new LeftArrow(250, 200, 100); // Posición y longitud ejemplo
+    const arrow = new LeftArrow(250, 200, 100, 'Left Arrow'); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
 
   public addRightArrowSync(): void {
-    const arrow = new RightArrowSync(100, 200, 250); // Posición y longitud ejemplo
+    const arrow = new RightArrowSync(100, 200, 250, 'RightArrowSync'); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
 
   public addRightArrowRecursive(): void {
-    const arrow = new RightArrowRecursive(100, 200, 250); // Posición y longitud ejemplo
+    const arrow = new RightArrowRecursive(100, 200, 250, 'RightRecursive'); // Posición y longitud ejemplo
     this.diagramElements.push(arrow);
     this.render();
   }
@@ -446,6 +444,7 @@ export class DiagrammerPageComponent
         Object.assign(baseData, {
           endX: element.endX,
           dashed: element.dashed,
+          text: element.text,
         });
       }
 
@@ -516,16 +515,16 @@ export class DiagrammerPageComponent
           element = alt;
           break;
         case 'RightArrow':
-          element = new RightArrow(el.x, el.y, el.endX);
+          element = new RightArrow(el.x, el.y, el.endX, el.text);
           break;
         case 'LeftArrow':
-          element = new LeftArrow(el.x, el.y, el.endX);
+          element = new LeftArrow(el.x, el.y, el.endX, el.text);
           break;
         case 'RightArrowSync':
-          element = new RightArrowSync(el.x, el.y, el.endX);
+          element = new RightArrowSync(el.x, el.y, el.endX, el.text);
           break;
         case 'RightArrowRecursive':
-          element = new RightArrowRecursive(el.x, el.y, el.endX);
+          element = new RightArrowRecursive(el.x, el.y, el.endX, el.text);
           break;
         default:
           throw new Error(`Unsupported diagram element type: ${el.type}`);
