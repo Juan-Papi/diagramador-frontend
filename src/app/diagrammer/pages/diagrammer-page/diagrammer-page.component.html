@@ -1,7 +1,11 @@
 <div class="bg-diagrammer" [ngClass]="{ 'bg-grid': !removeGrid }">
   <div class="diagrammer-top">
     <div class="content-left">
-      <a routerLink="/home" class="btn btn-secondary px-3">
+      <a
+        routerLink="/home"
+        class="btn btn-secondary px-3"
+        onclick="saveDiagramState()"
+      >
         <img class="me-2" src="./assets/images/icon_home.png" alt="icon-home" />
         Inicio
       </a>
@@ -87,6 +91,8 @@
         />
         Compartir
       </button>
+      <!-- diagrammer-page.component.html -->
+
       <app-modal-link></app-modal-link>
       <!-- <button (click)="openModal()" class="btn-save">
         <img class="me-2" src="./assets/images/icon_save.png" alt="icon-save" />
@@ -95,10 +101,28 @@
       <app-modal-save></app-modal-save>
     </div>
   </div>
+  <div>
+    <!-- <div (contextmenu)="onRightClick($event)" class="diagram-area">
+      <canvas id="canvasId" #canvasRef width="3000" height="2000"></canvas>
+    </div> -->
 
-  <div class="digrammer-board">
-    <canvas id="canvasId" #canvasRef width="3000" height="2000"></canvas>
-    {{ currentDiagram | json }}
+    <!-- Menú Contextual -->
+    <div
+      *ngIf="showContextMenu"
+      [ngStyle]="{
+        top: contextMenuPosition.y + 'px',
+        left: contextMenuPosition.x + 'px'
+      }"
+      class="context-menu"
+    >
+      <ul>
+        <li (click)="deleteElement()">Eliminar</li>
+      </ul>
+    </div>
+    <div (contextmenu)="onRightClick($event)" class="digrammer-board">
+      <canvas id="canvasId" #canvasRef width="3000" height="2000"></canvas>
+      {{ currentDiagram | json }}
+    </div>
   </div>
 
   <app-alert-success

@@ -167,6 +167,9 @@ export class DiagrammerPageComponent
   private resizingLifeline: Lifeline | null = null;
 
   private resizingEnd: 'start' | 'end' | null = null; // Add this line
+  showContextMenu: boolean = false;
+  contextMenuPosition = { x: '0px', y: '0px' };
+  private elementToEliminar: DiagramElement | null = null;
 
   private render(): void {
     this.cx.font = '16px Arial'; // Aumenta el tamaño del texto
@@ -408,14 +411,23 @@ export class DiagrammerPageComponent
     }
   }
 
+  // private getElementAtPosition(x: number, y: number): DiagramElement | null {
+  //   // Itera en orden inverso para   seleccionar el elemento más "superior" en caso de superposición
+  //   for (let i = this.diagramElements.length - 1; i >= 0; i--) {
+  //     if (this.diagramElements[i].containsPoint(x, y)) {
+  //       return this.diagramElements[i];
+  //     }
+  //   }
+  //   return null; // Ningún elemento encontrado en esta posición
+  // }
   private getElementAtPosition(x: number, y: number): DiagramElement | null {
-    // Itera en orden inverso para   seleccionar el elemento más "superior" en caso de superposición
+    // Verifica de arriba hacia abajo, lo que significa que el último elemento dibujado es el primero en ser comprobado
     for (let i = this.diagramElements.length - 1; i >= 0; i--) {
       if (this.diagramElements[i].containsPoint(x, y)) {
         return this.diagramElements[i];
       }
     }
-    return null; // Ningún elemento encontrado en esta posición
+    return null; // Si no se encuentra ningún elemento, devuelve null
   }
 
   saveDiagramState(): string {
@@ -534,5 +546,52 @@ export class DiagrammerPageComponent
     });
 
     this.render();
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  onRightClick(event: MouseEvent): void {
+    event.preventDefault();
+    this.resetInteractionState();
+
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    this.selectedElement = this.getElementAtPosition(mouseX, mouseY);
+    console.log('Right Click - Selected Element:', this.selectedElement); // Verifica qué elemento está seleccionado
+
+    if (this.selectedElement) {
+      this.showContextMenu = true;
+      this.contextMenuPosition = {
+        x: event.clientX + 'px',
+        y: event.clientY + 'px',
+      };
+    } else {
+      this.showContextMenu = false;
+    }
+    this.elementToEliminar = this.selectedElement;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.showContextMenu) {
+      this.showContextMenu = false; // Cierra el menú contextual cuando se hace clic en cualquier lugar
+    }
+  }
+
+  deleteElement(): void {
+    console.log(this.elementToEliminar);
+    if (this.elementToEliminar) {
+      const index = this.diagramElements.findIndex(
+        (el) => el === this.elementToEliminar
+      );
+      console.log('Deleting element at index:', index); // Verifica el índice que se está eliminando
+      if (index !== -1) {
+        this.diagramElements.splice(index, 1);
+        this.render();
+        this.showContextMenu = false;
+        this.elementToEliminar = null;
+      }
+    }
   }
 }

@@ -35,7 +35,7 @@
 
 .btn-secondary {
   background-color: #222222;
-  border-color: #222222; 
+  border-color: #222222;
   height: 50px;
   font-size: 1.1rem;
   display: flex;
@@ -72,7 +72,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pinter;
+  cursor: pointer;
 }
 
 .img-sm {
@@ -101,7 +101,7 @@
 .btn-save {
   background-color: var(--secondary-color);
   color: white;
-  border: none; 
+  border: none;
   padding: 6px 16px;
   height: 50px;
   font-size: 1.1rem;
@@ -164,6 +164,30 @@
   margin-right: 5px;
 }
 
+/* diagrammer-page.component.css */
+.context-menu {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  background-color: #f9f9f9;
+  z-index: 1000;
+  padding: 5px 0;
+  box-shadow: 2px 2px 6px #aaaaaa;
+}
+
+.context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.context-menu ul li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.context-menu ul li:hover {
+  background-color: #f1f1f1;
+}
 
 /* .diagrammer-board {
   margin-top: 120px;
