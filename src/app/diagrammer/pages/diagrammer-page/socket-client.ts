@@ -15,7 +15,7 @@ export class SocketService {
     const token = localStorage.getItem('token');
     console.log({ token });
     const manager = new Manager(`${environment.url}`, {
-      path: '/socket.io/',
+      path: '/socket.io/socket.io.js',
       extraHeaders: {
         token: `${token}`, // Assuming the backend expects a bearer token
       },
