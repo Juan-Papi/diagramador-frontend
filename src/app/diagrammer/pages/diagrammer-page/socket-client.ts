@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Manager, Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class SocketService {
   constructor() {
     const token = localStorage.getItem('token');
     console.log({ token });
-    const manager = new Manager('http://localhost:3000', {
+    const manager = new Manager(`${environment.url}`, {
       path: '/socket.io/',
       extraHeaders: {
         token: `${token}`, // Assuming the backend expects a bearer token
