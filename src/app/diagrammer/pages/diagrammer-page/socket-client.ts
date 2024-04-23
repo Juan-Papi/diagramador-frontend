@@ -14,7 +14,7 @@ export class SocketService {
   constructor() {
     const token = localStorage.getItem('token');
     console.log({ token });
-    const manager = new Manager(`${environment.url}`, {
+    const manager = new Manager(`https://nest-diagramador-production.up.railway.app`, {
       path: '/socket.io',
       extraHeaders: {
         token: `${token}`, // Assuming the backend expects a bearer token
