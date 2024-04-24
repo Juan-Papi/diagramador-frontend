@@ -1,4 +1,4 @@
 
   export const environment = {
-    baseUrl: "http://localhost:3000/api"
+    baseUrl: "https://nest-diagramador-production.up.railway.app/api"
   }
